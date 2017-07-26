@@ -1,0 +1,196 @@
+.tktWrap {
+    color: #fff;
+    transition: opacity 0.5s;
+    overflow: hidden;
+}
+
+.tktWrap.past {
+    opacity: 0.4;
+}
+
+.tktWrap.reserved .tkt {
+    opacity: 0.9;
+}
+
+.tktWrap .stamp {
+    display: none;
+    position: absolute;
+    top: 3rem;
+    left: 14%;
+    width: 12rem;
+    padding-bottom: 7rem;
+    background-image: url(http://www.caravansinthesun.com/img/under-offer-big.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.tktWrap.reserved .stamp {
+    display: block;
+}
+
+.tkt {
+    background: linear-gradient(to bottom,#343434 0%,#343434 26%,#ecedef 26%,#ecedef 100%);
+    height: 11em;
+    float: left;
+    position: relative;
+    padding: 1em;
+}
+
+.tktLeft {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    width: 74%;
+    margin-bottom: 2rem;
+}
+
+.tktWrap.ripped .tktLeft {
+    border-right: .18em dashed #fff;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.tktWrap.ripped .tktLeft:before,.tktWrap.ripped .tktLeft:after {
+    content: "";
+    position: absolute;
+    display: block;
+    width: .9em;
+    height: .9em;
+    background: #fff;
+    border-radius: 50%;
+    right: -.5em;
+}
+
+.tktWrap.ripped .tktLeft:before {
+    top: -.4em;
+}
+
+.tktWrap.ripped .tktLeft:after {
+    bottom: -.4em;
+}
+
+.tktRight {
+    width: 26%;
+    border-left: .18em dashed #fff;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    text-align: center;
+    transition: transform 0.5s;
+    transform-origin: bottom;
+}
+
+.tktRight:before,.tktRight:after {
+    content: "";
+    position: absolute;
+    display: block;
+    width: .9em;
+    height: .9em;
+    background: #fff;
+    border-radius: 50%;
+    left: -.5em;
+}
+
+.tktRight:before {
+    top: -.4em;
+}
+
+.tktRight:after {
+    bottom: -.4em;
+}
+
+.tktWrap.ripped .tktRight {
+    transform: rotate(7deg) translate(5px,8px);
+}
+
+.tktWrap h1 {
+    font-size: 1.1em;
+    margin: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.tktWrap h1 span {
+    font-weight: normal;
+}
+
+.title,.name,.seat,.time {
+    text-transform: uppercase;
+    font-weight: normal;
+}
+
+.title h2,.name h2,.seat h2,.time h2 {
+    font-size: .9em;
+    color: #525252;
+    margin: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.title span,.name span,.seat span,.time span {
+    font-size: .7em;
+    color: #a2aeae;
+    position: relative;
+    top: -0.2rem;
+}
+
+.title {
+    margin: 1.2em 0 0 0;
+}
+
+.name,.seat {
+    margin: 0;
+}
+
+.time {
+    margin: 0 0 0 1em;
+}
+
+.seat,.time {
+    float: left;
+}
+
+.eye {
+    text-align: center;
+}
+
+.eye img {
+    width: 2.1rem;
+    max-width: 100%;
+    position: relative;
+    top: -0.7rem;
+}
+
+.number {
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.number h3 {
+    color: #343434;
+    margin: 0;
+    font-size: 2.5em;
+}
+
+.number span {
+    display: block;
+    color: #a2aeae;
+}
+
+.barcode {
+    height: 2em;
+    width: 0;
+    margin: 0.3rem 0 0 -5rem;
+    box-shadow: 1px 0 0 1px #343434,5px 0 0 1px #343434,10px 0 0 1px #343434,11px 0 0 1px #343434,15px 0 0 1px #343434,18px 0 0 1px #343434,22px 0 0 1px #343434,23px 0 0 1px #343434,26px 0 0 1px #343434,30px 0 0 1px #343434,35px 0 0 1px #343434,37px 0 0 1px #343434,41px 0 0 1px #343434,44px 0 0 1px #343434,47px 0 0 1px #343434,51px 0 0 1px #343434,56px 0 0 1px #343434,59px 0 0 1px #343434,64px 0 0 1px #343434,68px 0 0 1px #343434,72px 0 0 1px #343434,74px 0 0 1px #343434,77px 0 0 1px #343434,81px 0 0 1px #343434;
+    display: inline-block;
+}
+
+@media(max-width: 420px) {
+    .number span {
+        font-size: 0.65rem
+    }
+    .barcode {
+        margin: 0.3rem 0 0 -3.7rem;
+        box-shadow: 1px 0 0 1px #343434,5px 0 0 1px #343434,10px 0 0 1px #343434,11px 0 0 1px #343434,15px 0 0 1px #343434,18px 0 0 1px #343434,22px 0 0 1px #343434,23px 0 0 1px #343434,26px 0 0 1px #343434,30px 0 0 1px #343434,35px 0 0 1px #343434,37px 0 0 1px #343434,41px 0 0 1px #343434,44px 0 0 1px #343434,47px 0 0 1px #343434,51px 0 0 1px #343434,56px 0 0 1px #343434,59px 0 0 1px #343434;
+    }
+}

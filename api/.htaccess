@@ -1,0 +1,18 @@
+Options -Indexes
+
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]
+
+<FilesMatch "^composer">
+Order Allow,Deny
+Deny from all
+</FilesMatch>
+
+<IfModule mod_headers.c>
+    SetEnvIf Origin "http(s)?://(www\.)?(tktpass.com|dev.tktpass.com|api.tktpass.com)" AccessControlAllowOrigin=$0
+    Header set Access-Control-Allow-Origin %{AccessControlAllowOrigin}e env=AccessControlAllowOrigin
+    Header set Access-Control-Allow-Credentials true
+    Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE"
+</IfModule>

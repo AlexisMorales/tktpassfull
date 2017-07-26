@@ -1,0 +1,39 @@
+/* ##########
+ * # Tables #
+ * ##########
+ */
+
+table.table {
+    border-top: 2px solid #5ac336;
+    border-bottom: 2px solid #5ac336;
+}
+
+.table > thead > tr > th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #5ac336;
+}
+
+.table-scrollable thead,
+.table-scrollable tbody,
+.table-scrollable tr,
+.table-scrollable td,
+.table-scrollable th {
+    display: block;
+}
+
+.table-scrollable tbody {
+    overflow-y: auto;
+}
+
+.table-scrollable tr:after {
+    content: ' ';
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+
+.table-scrollable thead th,
+.table-scrollable tbody td {
+    width: 25%;
+    float: left;
+}

@@ -1,0 +1,92 @@
+.responsive-calendar .cal-controls {
+  text-align: center;
+}
+.responsive-calendar .cal-controls a {
+  cursor: pointer;
+  color: #333;
+}
+.responsive-calendar .cal-controls h4 {
+  display: inline;
+}
+.responsive-calendar .day-headers,
+.responsive-calendar .days {
+  font-size: 0;
+}
+.responsive-calendar .day {
+  display: inline-block;
+  position: relative;
+  font-size: 14px;
+  width: 14.285714285714286%;
+  text-align: center;
+}
+.responsive-calendar .day a {
+  color: #000000;
+  display: block;
+  cursor: pointer;
+  padding: 20% 0 20% 0;
+  border-radius: 4px;
+}
+.responsive-calendar .day a:hover {
+  background-color: #eee;
+  text-decoration: none;
+}
+.responsive-calendar .day.cal-header {
+  font-weight: 600;
+  color: #5ac336;
+  padding: 0.5em 0;
+}
+.responsive-calendar .day.today {
+  border: 1px solid #5ac336;
+}
+/*.responsive-calendar .day.active a {
+  background-color: #fff;
+  color: #000;
+  border-radius: 4px;
+}*/
+.responsive-calendar .day.active.selected a {
+  background-color: #5ac336;
+  color: #fff;
+}
+.responsive-calendar .day.active.selected a:hover {
+  background-color: #6CCE4B;
+}
+.responsive-calendar .day.active.selected .badge {
+  color: #5ac336;
+}
+/*.responsive-calendar .day.active a:hover {
+  background-color: #6CCE4B;
+}
+.responsive-calendar .day.active.not-current {
+  background-color: #8fcaef;
+  color: #ffffff;
+}
+.responsive-calendar .day.active.not-current:hover {
+  background-color: #bcdff5;
+}*/
+.responsive-calendar .day.not-current a {
+  color: #ddd;
+}
+.responsive-calendar .day.not-current.selected a {
+    background-color: #ceeace;
+    color: #eee;
+}
+.responsive-calendar .day.not-current.selected a:hover {
+    background-color: #d3efd3;
+}
+.responsive-calendar .day .badge {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  z-index: 1;
+  background: #d9534f;
+}
+.responsive-calendar .day.past .badge {
+  background: #ccc;
+}
+.responsive-calendar .day.selected .badge {
+  background: #fff;
+  color: #5ac336;
+}
+.responsive-calendar .day.not-current .badge {
+  opacity: 0.5
+}

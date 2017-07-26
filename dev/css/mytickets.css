@@ -1,0 +1,61 @@
+.main-content{
+	padding-top: 5em;
+}
+.ticket-row {
+	margin: 0;
+	padding: 2em 0 1em;
+	border-bottom: 1px solid #aaa;
+}
+.ticket {
+	background: #eee;
+	overflow: hidden;
+	margin-bottom: 1.5em;
+	padding:0;
+	height: 155px;
+}
+.ticket .col-xs-9 {
+	border-right: 4px solid #fff;
+}
+.ticket .green{
+	background: #5ac336;
+	margin-right: -15px;
+	margin-left: -15px;
+	border-bottom: 5px solid #fff;
+	padding-right: 15px;
+	padding-left: 15px;
+	color: #fff;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.ticket .col-xs-9 p:first-child {
+	margin-top:10px;
+}
+.ticket .green img{
+	display: block;
+	margin: 0 auto;
+	height: 40px;
+	padding: 0.45em 0;
+	width: auto;
+}
+.ticket .ticket-type {
+	margin-top: 10px;
+	text-transform: uppercase;
+	text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ticket .ticket-quantity {
+	text-align: center;
+	font-size:2em;
+}
+.ticket .ticket-quantity:before {
+	content:'x';
+}
+.ticket-buttons{
+	height: 155px;
+}
+.ticket-buttons .btn {
+	min-width: 142px;
+}

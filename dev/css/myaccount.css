@@ -1,0 +1,54 @@
+.form-horizontal p {
+	margin-bottom: 0;
+	font-style: italic;
+	color: rgb(116,116,116);
+}
+.membership-types {
+	font-size: 1.4em;
+}
+.membership-types td {
+	padding: 0.5em 1em;
+}
+.membership-types tr.active{
+	background: rgb(242,242,242);
+}
+.savedCard {
+	border: 1px solid #e2e2e2;
+	margin-bottom: 1em;
+	height: 168px;
+	position: relative;
+}
+.savedCard form{
+	margin: 0 1em;
+}
+
+.cc-brand.visa,
+.cc-brand.mastercard,
+.cc-brand.amex {
+    margin-left: 15px;
+    margin-top: 5px;
+}
+
+.savedCard form .form-group > div{
+	margin-bottom: 0.5em;
+}
+.savedCard form input[readonly]{
+	background:white;
+}
+#cards .delete{
+	position: absolute;
+    display: block;
+    top: -9px;
+    right: 11px;
+    background: #fff;
+    border: 1px solid #eee;
+    padding: 0 5px;
+    border-radius: 50%;
+    color: #000;
+    border-left: 0;
+    border-bottom: 0;
+}
+#cards .delete:hover,
+#cards .delete:active{
+	text-decoration: none;
+}

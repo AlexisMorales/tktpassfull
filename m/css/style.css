@@ -1,0 +1,223 @@
+/*
+ * Icon Font
+ */
+
+@font-face {
+  font-family: iconfont;
+  src: url(../fonts/iconfont.a3c9ebd.eot);
+  src: url(../fonts/iconfont.a3c9ebd.eot#iefix) format("embedded-opentype"), url(../fonts/iconfont.d43499a.woff) format("woff"), url(../fonts/iconfont.3192b72.ttf) format("truetype"), url(../fonts/iconfont.cc95106.svg#iconfont) format("svg")
+}
+
+.iconfont {
+  font-family: iconfont !important;
+  font-size: 25px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale
+}
+
+.icon-about:before {
+  content: "\E600"
+}
+
+.icon-thumbup:before {
+  content: "\E606"
+}
+
+.icon-feedback:before {
+  content: "\E601"
+}
+
+.icon-about1:before {
+  content: "\E61F"
+}
+
+.icon-emotion:before {
+  content: "\E607"
+}
+
+.icon-close:before {
+  content: "\E608"
+}
+
+.icon-pic:before {
+  content: "\E609"
+}
+
+.icon-ios7reload:before {
+  content: "\E60A"
+}
+
+.icon-ios7redooutline:before {
+  content: "\E60C"
+}
+
+.icon-ios7chatbubbleoutline:before {
+  content: "\E60D"
+}
+
+.icon-ios7heartoutline:before {
+  content: "\E60E"
+}
+
+.icon-ios7person:before {
+  content: "\E605"
+}
+
+.icon-ios7personoutline:before {
+  content: "\E61C"
+}
+
+.icon-ios7gear:before {
+  content: "\E60F"
+}
+
+.icon-ios7gearoutline:before {
+  content: "\E610"
+}
+
+.icon-ios7cameraoutline:before {
+  content: "\E611"
+}
+
+.icon-ios7chatboxesoutline:before {
+  content: "\E612"
+}
+
+.icon-ios7homeoutline:before {
+  content: "\E613"
+}
+
+.icon-ios7chatbubble:before {
+  content: "\E614"
+}
+
+.icon-ios7worldoutline:before {
+  content: "\E615"
+}
+
+.icon-ios7arrowdown:before {
+  content: "\E616"
+}
+
+.icon-ios7home:before {
+  content: "\E602"
+}
+
+.icon-ios7more:before {
+  content: "\E61D"
+}
+
+.icon-ios7arrowleft:before {
+  content: "\E617"
+}
+
+.icon-ios7arrowright:before {
+  content: "\E618"
+}
+
+.icon-feedback2:before {
+  content: "\E658"
+}
+
+.icon-like:before {
+  content: "\E8D3"
+}
+
+.icon-lianjie:before {
+  content: "\E619"
+}
+
+.icon-send:before {
+  content: "\E603"
+}
+
+.icon-feedback3:before {
+  content: "\E621"
+}
+
+.icon-iosatoutline:before {
+  content: "\E61A"
+}
+
+.icon-location:before {
+  content: "\E61B"
+}
+
+.icon-wujieguoyangshi:before {
+  content: "\E622"
+}
+
+.icon-comment:before {
+  content: "\E66A"
+}
+
+.icon-language:before {
+  content: "\E645"
+}
+
+/*
+ * Nav
+ */
+
+i.icon.icon-bars {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2021%2014'%3E%3Cpath%20fill%3D'%235ac336'%20d%3D'M0%2C0h2v2H0V0z%20M4%2C0h17v1H4V0z%20M0%2C6h2v2H0V6z%20M4%2C6h17v1H4V6z%20M0%2C12h2v2H0V12z%20M4%2C12h17v1H4V12z'%2F%3E%3C%2Fsvg%3E")
+}
+
+/*
+ * Tabbar
+ */
+
+.tabbar a.active {
+  color: #5ac336
+}
+
+.tabbar a.active i.icon.icon-ios7homeoutline:before {
+  content: "\E602"
+}
+
+.tabbar a.active i.icon.icon-ios7chatbubbleoutline:before {
+  content: "\E614"
+}
+
+.tabbar a.active i.icon.icon-ios7gearoutline:before {
+  content: "\E60F"
+}
+
+/*
+ * Pages
+ */
+
+div.page-content.with-bg:before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-image: url(../img/logo_grey.png);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 150px 150px;
+    background-attachment: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.searchbar {
+  z-index: 110;
+}
+
+/*
+ * Forms
+ */
+.list-block .item-title.label,
+.list-block .item-input{
+  width:auto;
+}
+.label-switch {
+  float:right;
+}
+.content-block.help-text {
+  margin-top:-25px;
+}

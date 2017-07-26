@@ -1,0 +1,1184 @@
+<?php
+    require_once 'db-setup.php';
+
+    /* ==================================================================================== *
+       Events Table
+     * ==================================================================================== */
+
+    function insert_event($data){
+        global $db;
+        $required_keys = array("name","host","start","address_1","description","user_id");
+        foreach ($required_keys as $required_key) {
+          if(!isset($data[$required_key])){
+            return array("err"=>"Missing required: ".$required_key,"status"=>400);
+          }
+        }
+        $keys = array_keys($data);
+        $allowed_keys = array("id", "name", "host", "start", "venue", "address_1", "address_2", "city", "postcode", "end", "description", "image", "private", "fb_id", "user_id", "created");
+        foreach ($keys as $key) {
+          if(!in_array($key, $allowed_keys)){
+            return array("err"=>"Unrecognised key: ".$key,"status"=>400);
+          }
+        }
+        $fields = '`'.implode('`, `',$keys).'`';
+        $placeholder = rtrim(str_repeat('?,', count($keys)), ",");
+        try{
+            $stmt = $db->prepare("INSERT INTO `events` ($fields) VALUES ($placeholder)");
+            if($stmt->execute(array_values($data))){
+                $id = $db->lastInsertId();
+                $res = $db->query("SELECT * FROM `events` WHERE id = ".$id);
+                if($res)
+                    return $res->fetch(PDO::FETCH_ASSOC);
+                else
+                    return array("err"=>$db->errorInfo()[2],"status"=>500);
+            } else{
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+            }
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    function event_exists($id){
+        global $db;
+        $stmt = $db->prepare('SELECT COUNT(id) FROM events WHERE id = ? LIMIT 1');
+        $stmt->bindParam(1, $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return (bool)($stmt->fetchColumn());
+    }
+
+    function get_event($id){
+        global $db;
+        $stmt = $db->prepare('SELECT * FROM events WHERE id = ? LIMIT 1');
+        $stmt->bindParam(1, $id, PDO::PARAM_INT);
+        try{
+            if($stmt->execute()){
+                $res = $stmt->fetch(PDO::FETCH_ASSOC);
+                return $res;
+            } else{
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+            }
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    function update_event($id, $data){
+        global $db;
+        $keys = array_keys($data);
+        $allowed_keys = array("id", "name", "host", "start", "address_1", "address_2", "city", "postcode", "end", "description", "image", "private", "fb_id", "user_id", "created");
+        foreach ($keys as $key) {
+          if(!in_array($key, $allowed_keys)){
+            return array("err"=>"Unrecognised key: ".$key,"status"=>400);
+          }
+        }
+        $fields = '`'.implode('`= ?, `',$keys).'` = ?';
+        try{
+            $stmt = $db->prepare("UPDATE `events` SET $fields WHERE `id` = ?");
+            if($stmt->execute(array_merge(array_values($data),array($id)))){
+                $stmt = $db->prepare("SELECT * FROM `events` WHERE id = ?");
+                if($stmt->execute($data["id"] ? array($data["id"]) : array($id)))
+                    return $stmt->fetch(PDO::FETCH_ASSOC);
+                else
+                    return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+            }
+            else{
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+            }
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    function delete_event($id){
+        global $db;
+        $stmt = $db->prepare('DELETE FROM events WHERE id = ? LIMIT 1');
+        $stmt->bindParam(1, $id, PDO::PARAM_INT);
+        try{
+            if($stmt->execute()){
+                return array("success"=>true);
+            } else{
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+            }
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    function get_events($from,$to){
+        global $db;
+        if(!isset($from) || !$from){
+            //$fdolm = (new DateTime())->setTimestamp(mktime(0, 0, 0, date('n')-1, 1, date('Y')))->format("Y-m-d");
+            $fdotm = date('Y-m-01');//;
+            $from = $fdotm;
+        }
+        if(!isset($to) || !$to){
+            //$ldotm = date('Y-m-t');
+            $ldonm = (new DateTime())->setTimestamp(mktime(0, 0, 0, date('n')+2, 0, date('Y')))->format("Y-m-d");
+            $to = $ldonm;
+        }
+        if(strtotime($from) > strtotime($to)){
+            $tmp = $from;
+            $from = $to;
+            $to = $tmp;
+            $tmp = null;
+        }
+        try{
+            $res = $db->query("SELECT * FROM events WHERE DATE_FORMAT(start, '%Y-%m-%d') BETWEEN '$from' AND '$to' ORDER BY start ASC");
+            if($res)
+                return $res->fetchAll(PDO::FETCH_ASSOC);
+            else
+                return array("err"=>$db->errorInfo()[2],"status"=>500);
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    function get_events_by_id($ids){
+        global $db;
+        $idsStr = implode(',', $ids);
+        try{
+            $res = $db->query("SELECT * FROM events WHERE id in ($idsStr)");
+            if($res)
+                return $res->fetchAll(PDO::FETCH_ASSOC);
+            else
+                return array("err"=>$db->errorInfo()[2],"status"=>500);
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    function get_user_events($userId=null,$from=null){
+        global $db;
+        if(isset($userId) && $userId){
+            if(!user_exists($userId))
+                return array("err"=>"User id ".$userId." not recognised","status"=>400);
+        } else {
+            if (session_status() == PHP_SESSION_NONE)
+                session_start();
+            if(!is_array($_SESSION['user']) || !$_SESSION['user']['id'])
+                return array("err"=>"User not logged in","status"=>500);
+            else
+                $userId = $_SESSION['user']['id'];
+        }
+        if(!isset($from) || !$from){
+            $sm = (new DateTime())->setTimestamp(mktime(0, 0, 0, date('n')-6, 1, date('Y')))->format("Y-m-d");
+            //$fdolm = (new DateTime())->setTimestamp(mktime(0, 0, 0, date('n')-1, 1, date('Y')))->format("Y-m-d");
+            //$fdotm = date('Y-m-01');
+            $from = $sm;
+        }
+        try{
+            $res = $db->query("SELECT * FROM `events` WHERE `user_id` = $userId AND `start` > '$from' ORDER BY `start` DESC");
+            if($res)
+                return $res->fetchAll(PDO::FETCH_ASSOC);
+            else
+                return array("err"=>$db->errorInfo()[2],"status"=>500);
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    function get_user_upcoming_events($userId=null){
+        global $db;
+        if(isset($userId) && $userId){
+            if(!user_exists($userId))
+                return array("err"=>"User id ".$userId." not recognised","status"=>400);
+        } else {
+            if (session_status() == PHP_SESSION_NONE)
+                session_start();
+            if(!is_array($_SESSION['user']) || !$_SESSION['user']['id'])
+                return array("err"=>"User not logged in","status"=>500);
+            else
+                $userId = $_SESSION['user']['id'];
+        }
+        try{
+            $query = <<<EOF
+SELECT * FROM events
+WHERE user_id = $userId AND (
+    (end IS NOT NULL AND end > NOW())
+    OR
+    (end IS NULL AND start > DATE_SUB(NOW(), INTERVAL 4 HOUR))
+) ORDER BY start ASC
+EOF;
+            $res = $db->query($query);
+            if($res)
+                return $res->fetchAll(PDO::FETCH_ASSOC);
+            else
+                return array("err"=>$db->errorInfo()[2],"status"=>500);
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    /* ==================================================================================== *
+       Users Table
+     * ==================================================================================== */
+
+    function insert_user($data){
+        global $db;
+        $allowed_keys = array("id", "first_name", "last_name", "email", "hash", "joined", "plan", "referral", "customer_id", "mobile", "fb_id", "fb_access_token", "fb_access_expires", "birthday", "gender", "city", "country", "mailing_list", "last_active", "account_id", "account_secret", "account_publishable", "verified");
+        $keys = array_keys($data);
+        foreach ($keys as $key) {
+          if(!in_array($key, $allowed_keys)){
+            return array("err"=>"Unrecognised key: ".$key,"status"=>400);
+          }
+        }
+        $fields = '`'.implode('`, `',$keys).'`';
+        $placeholder = rtrim(str_repeat('?,', count($keys)), ",");
+        try{
+            $stmt = $db->prepare("INSERT INTO `users` ($fields) VALUES ($placeholder)");
+            if($stmt->execute(array_values($data))){
+                $id = $db->lastInsertId();
+                $res = $db->query("SELECT * FROM `users` WHERE id = ".$id);
+                if($res)
+                    return $res->fetch(PDO::FETCH_ASSOC);
+                else
+                    return array("err"=>$db->errorInfo()[2],"status"=>500);
+            } else{
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+            }
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    function user_exists($id, $fb=false){
+        global $db;
+        $stmt = $db->prepare('SELECT '.($fb?'id':'COUNT(id)').' FROM users WHERE '.($fb?'fb_id':'id').' = ? LIMIT 1');
+        $stmt->bindParam(1, intval($id), PDO::PARAM_INT);
+        if($stmt->execute()){
+            if($fb){
+                if($res = $stmt->fetch(PDO::FETCH_ASSOC))
+                    return $res["id"];
+                else return false;
+            }
+            else
+                return (bool)($stmt->fetchColumn());
+        } else
+            return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+    }
+
+    function get_user($id=null){
+        global $db;
+        if(!isset($id) || !$id){
+            if (session_status() == PHP_SESSION_NONE)
+                session_start();
+            if(!is_array($_SESSION['user']) || !$_SESSION['user']['id'])
+                return array("err"=>"User not logged in","status"=>500);
+            else
+                $id = $_SESSION['user']['id'];
+        }
+        $stmt = $db->prepare('SELECT * FROM users WHERE id = ? LIMIT 1');
+        $stmt->bindParam(1, $id, PDO::PARAM_INT);
+        try{
+            if($stmt->execute()){
+                $res = $stmt->fetch(PDO::FETCH_ASSOC);
+                return $res;
+            } else
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    function user_has_email($id){
+        global $db;
+        if(!isset($id) || !$id){
+            if (session_status() == PHP_SESSION_NONE)
+                session_start();
+            if(!is_array($_SESSION['user']) || !$_SESSION['user']['id'])
+                return array("err"=>"User not logged in","status"=>500);
+            if(isset($_SESSION['email']))
+                return (bool)($_SESSION['email']);
+            else
+                $id = $_SESSION['user']['id'];
+        }
+        $stmt = $db->prepare('SELECT email FROM users WHERE id = ? LIMIT 1');
+        $stmt->bindParam(1, intval($id), PDO::PARAM_INT);
+        if($stmt->execute())
+            return (bool)($stmt->fetchColumn());
+        else
+            return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+    }
+
+    function get_user_by_email($email){
+        global $db;
+        if(!isset($email) || !$email)
+            return array("err"=>"User email not provided","status"=>500);
+        $stmt = $db->prepare('SELECT * FROM users WHERE email = ? LIMIT 1');
+        $stmt->bindParam(1, $email, PDO::PARAM_STR);
+        try{
+            if($stmt->execute()){
+                $res = $stmt->fetch(PDO::FETCH_ASSOC);
+                return $res;
+            } else
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    function get_customer_id($id){
+        global $db;
+        if(!$id){
+            if (session_status() == PHP_SESSION_NONE)
+                session_start();
+            if(!is_array($_SESSION['user']) || !$_SESSION['user']['id'])
+                return array("err"=>"User not logged in","status"=>500);
+            else
+                $id = $_SESSION['user']['id'];
+        }
+        $stmt = $db->prepare('SELECT customer_id FROM users WHERE id = ? LIMIT 1');
+        $stmt->bindParam(1, $id, PDO::PARAM_INT);
+        try{
+            if($stmt->execute()){
+                $res = $stmt->fetch(PDO::FETCH_ASSOC);
+                return $res["customer_id"] ? $res["customer_id"] : false;
+            } else
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    function update_user($id, $data){
+        global $db;
+        $allowed_keys = array("id", "first_name", "last_name", "email", "hash", "joined", "plan", "referral", "customer_id", "mobile", "fb_id", "fb_access_token", "fb_access_expires", "birthday", "gender", "city", "country", "mailing_list", "last_active", "account_id", "account_secret", "account_publishable", "verified");
+        $keys = array_keys($data);
+        foreach ($keys as $key) {
+          if(!in_array($key, $allowed_keys)){
+            return array("err"=>"Unrecognised key: ".$key,"status"=>400);
+          }
+        }
+        $fields = '`'.implode('`= ?, `',$keys).'` = ?';
+        try{
+            $stmt = $db->prepare("UPDATE `users` SET $fields WHERE `id` = ?");
+            if($stmt->execute(array_merge(array_values($data),array($id)))){
+                $stmt = $db->prepare("SELECT * FROM `users` WHERE id = ?");
+                $stmt->execute($data["id"] ? $data["id"] : array($id));
+                return $stmt->fetch(PDO::FETCH_ASSOC);
+            }
+            else
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    function delete_user($id){
+        global $db;
+        $stmt = $db->prepare('DELETE FROM users WHERE id = ? LIMIT 1');
+        $stmt->bindParam(1, $id, PDO::PARAM_INT);
+        try{
+            if($stmt->execute()){
+                return array("success"=>true);
+            } else{
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+            }
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    /* ==================================================================================== *
+       Ticket Types Table
+     * ==================================================================================== */
+
+    function insert_ticket_type($data){
+        global $db;
+        $allowed_keys = array("id", "event_id", "type", "name", "price", "quantity","added");
+        $keys = array_keys($data);
+        foreach ($keys as $key) {
+          if(!in_array($key, $allowed_keys)){
+            return array("err"=>"Unrecognised key: ".$key,"status"=>400);
+          }
+        }
+        if(in_array("id", $keys)){
+          return array("err"=>"Cannot set ticket type id on insert","status"=>400);
+        }
+        $fields = '`'.implode('`, `',$keys).'`';
+        $placeholder = rtrim(str_repeat('?,', count($keys)), ",");
+        try{
+            $stmt = $db->prepare("INSERT INTO `event_ticket_types` ($fields) VALUES ($placeholder)");
+            if($stmt->execute(array_values($data))){
+                $id = $db->lastInsertId();
+                $res = $db->query("SELECT * FROM `event_ticket_types` WHERE id = ".$id);
+                if($res)
+                    return $res->fetch(PDO::FETCH_ASSOC);
+                else
+                    return array("err"=>$db->errorInfo()[2],"status"=>500);
+            } else{
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+            }
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    function ticket_type_exists($id){
+        global $db;
+        $stmt = $db->prepare('SELECT id FROM event_ticket_types WHERE id = ? LIMIT 1');
+        $stmt->bindParam(1, intval($id), PDO::PARAM_INT);
+        if($stmt->execute())
+            return (bool)($stmt->fetchColumn());
+        else
+            return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+    }
+
+    function get_ticket_type($id){
+        global $db;
+        $stmt = $db->prepare('SELECT * FROM event_ticket_types WHERE id = ? LIMIT 1');
+        $stmt->bindParam(1, $id, PDO::PARAM_INT);
+        try{
+            if($stmt->execute()){
+                $res = $stmt->fetch(PDO::FETCH_ASSOC);
+                return $res;
+            } else
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    function get_event_ticket_types($event_id){
+        global $db;
+        $stmt = $db->prepare('SELECT * FROM event_ticket_types WHERE event_id = ?');
+        $stmt->bindParam(1, $event_id, PDO::PARAM_INT);
+        try{
+            if($stmt->execute()){
+                $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                return $res;
+            } else
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    /*function get_event_ticket_type_ids($event_id){
+        global $db;
+        $stmt = $db->prepare('SELECT id FROM event_ticket_types WHERE event_id = ?');
+        $stmt->bindParam(1, $event_id, PDO::PARAM_INT);
+        try{
+            if($stmt->execute()){
+                $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                return array_map(function($arr){return $arr["id"];}, $res);
+            } else
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }*/
+
+    function update_ticket_type($id, $data){
+        global $db;
+        if(!ticket_type_exists($id))
+            return array("err"=>"Event ticket type ID ".$id." not recognised","status"=>400);
+        $allowed_keys = array("id", "event_id", "type", "name", "price", "quantity","added");
+        $keys = array_keys($data);
+        foreach ($keys as $key) {
+          if(!in_array($key, $allowed_keys)){
+            return array("err"=>"Unrecognised key: ".$key,"status"=>400);
+          }
+        }
+        $fields = '`'.implode('`= ?, `',$keys).'` = ?';
+        try{
+            $stmt = $db->prepare("UPDATE `event_ticket_types` SET $fields WHERE `id` = ?");
+            if($stmt->execute(array_merge(array_values($data),array($id)))){
+                $stmt = $db->prepare("SELECT * FROM `event_ticket_types` WHERE id = ?");
+                if($stmt->execute($data["id"] ? array($data["id"]) :  array($id)))
+                    return $stmt->fetch(PDO::FETCH_ASSOC);
+                else
+                    return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+            }
+            else{
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+            }
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    /*function add_to_ticket_type_sold($id, $num){
+        global $db;
+        if(!ticket_type_exists($id))
+            return array("err"=>"Event ticket type ID ".$id." not recognised","status"=>400);
+        try{
+            $res = $db->query("UPDATE `event_ticket_types` SET `sold` = `sold`+".intval($num)." WHERE `id` = ".intval($id));
+            if($res){
+                $res = $db->query("SELECT * FROM `event_ticket_types` WHERE id = ".intval($id)." LIMIT 1");
+                if($res)
+                    return $res->fetch(PDO::FETCH_ASSOC);
+                else
+                    return array("err"=>$db->errorInfo()[2],"status"=>500);
+            }
+            else return array("err"=>$db->errorInfo()[2],"status"=>500);
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }*/
+
+    function get_ticket_type_sold($id){
+        global $db;
+        if(!ticket_type_exists($id))
+            return array("err"=>"Event ticket type ID ".$id." not recognised","status"=>400);
+        try{
+            $res = $db->query("SELECT count(id) AS sold FROM `tickets` WHERE `event_ticket_type_id` = ".$id);
+            if($res)
+                return $res->fetch(PDO::FETCH_ASSOC)["sold"];
+            else return array("err"=>$db->errorInfo()[2],"status"=>500);
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    function delete_ticket_type($id){
+        global $db;
+        $stmt = $db->prepare('DELETE FROM event_ticket_types WHERE id = ? LIMIT 1');
+        $stmt->bindParam(1, $id, PDO::PARAM_INT);
+        try{
+            if($stmt->execute())
+                return array("success"=>true);
+            else
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    function put_event_ticket_types($event_id,$tickets){
+        global $db;
+        $current = get_event_ticket_types($event_id);
+        if(!is_array($current) || $current["err"])
+            return array("err"=>($current?$current["err"]:"Error unknown"),"status"=>($current?$current["status"]:500));
+        $error = false;
+        $db->beginTransaction();
+        if(count($current) === 0){
+            //No tickets in db, just insert all these
+            foreach($tickets as $ticket){
+                $result = insert_ticket_type(array_merge($ticket,array("event_id"=>$event_id)));
+                if(!$result || $result["err"]){
+                    $error = $result["err"];
+                    break;
+                }
+            }
+        } else {
+            //Tickets exist in db already so find out what needs doing
+            function array_search_by_key($array,$key,$val){
+                foreach($array as $i=>$array_item) {
+                    if ($array_item[$key] === $val)
+                        return $i;
+                }
+                return -1;
+            }
+            foreach($current as $i => $current_ticket){
+                $index = array_search_by_key($tickets,"id",$current_ticket["id"]);
+                if($index > -1){
+                    //Current ticket is present in tickets, see if it needs updating
+                    $diff = false;
+                    foreach($current_ticket as $key => $value){
+                        if($tickets[$index][$key] !== $value){
+                            $diff = true;
+                            break;
+                        }
+                    }
+                    if($diff){
+                        $result = update_ticket_type($current_ticket["id"],$tickets[$index]);
+                        if(!$result || $result["err"]){
+                            $error = $result["err"];
+                            break;
+                        }
+                    }
+                } else {
+                    //Current ticket is not in tickets, needs deleting
+                    $result = delete_ticket_type($current_ticket["id"]);
+                    if(!$result || $result["err"]){
+                        $error = $result["err"];
+                        break;
+                    }
+                }
+            }
+            //Check for error after updates/deletes, if not do inserts
+            if(!$error){
+                $insert_tickets = array();
+                foreach($tickets as $i => $ticket){
+                    if(!isset($ticket['id']))
+                        array_push($insert_tickets, $ticket);
+                }
+                if(count($insert_tickets) > 0){
+                    foreach($insert_tickets as $insert_ticket){
+                        $result = insert_ticket_type(array_merge($insert_ticket,array("event_id"=>$event_id)));
+                        if(!$result || $result["err"]){
+                            $error = $result["err"];
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if($error) {
+            $db->rollBack();
+            return array("err"=>$error,"status"=>500);
+        } else {
+            $db->commit();
+            return get_event_ticket_types($event_id);
+        }
+    }
+
+    /* ==================================================================================== *
+       Tickets Table
+     * ==================================================================================== */
+
+    function getToken($length=8){
+        $token = "";
+        $codeAlphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ123456789";
+        $max = strlen($codeAlphabet)-1;
+        for ($i=0; $i < $length; $i++) {
+            $token .= $codeAlphabet[random_int(0, $max)];
+        }
+        return $token;
+    }
+
+    function insert_ticket($data){
+        global $db;
+        $allowed_keys = array("id","event_ticket_type_id","user_id","charge_id","time","selling_time","selling_price","sold_ticket","transferred_from_ticket","transferring_to","transfer_price","transfer_time","transferred_ticket","used");
+        if(!isset($data["id"]))
+          $data["id"] = getToken(8);
+        $keys = array_keys($data);
+        foreach ($keys as $key) {
+          if(!in_array($key, $allowed_keys)){
+            return array("err"=>"Unrecognised key: ".$key,"status"=>400);
+          }
+        }
+        $fields = '`'.implode('`, `',$keys).'`';
+        $placeholder = rtrim(str_repeat('?,', count($keys)), ",");
+        try{
+            $stmt = $db->prepare("INSERT INTO `tickets` ($fields) VALUES ($placeholder)");
+            if($stmt->execute(array_values($data))){
+                $res = $db->query("SELECT * FROM `tickets` WHERE id = '".$data["id"]."'");
+                if($res)
+                    return $res->fetch(PDO::FETCH_ASSOC);
+                else
+                    return array("err"=>$db->errorInfo()[2],"status"=>500);
+            } else{
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+            }
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    function ticket_exists($id){
+        global $db;
+        $stmt = $db->prepare('SELECT COUNT(id) FROM tickets WHERE id = ? LIMIT 1');
+        $stmt->bindParam(1, $id);
+        if($stmt->execute())
+            return (bool)($stmt->fetchColumn());
+        else
+            array("err"=>$stmt->errorInfo()[2],"status"=>500);
+    }
+
+    function get_ticket($id){
+        global $db;
+        if(!isset($id) || !$id){
+            return array("err"=>"No ticket ID passed","status"=>500);
+        }
+        $stmt = $db->prepare('SELECT * FROM tickets WHERE id = ? LIMIT 1');
+        $stmt->bindParam(1, $id);
+        try{
+            if($stmt->execute())
+                return $stmt->fetch(PDO::FETCH_ASSOC);
+            else
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    function get_tickets($ids){
+        global $db;
+        if(!isset($ids) || !$ids || empty($ids)){
+            return array("err"=>"No ticket IDs passed","status"=>500);
+        }
+        if(!is_array($ids)){
+            $ids = explode(',',$ids);
+        }
+        $inQuery = implode(',', array_fill(0, count($ids), '?'));
+        $stmt = $db->prepare('SELECT * FROM tickets WHERE id in ('.$inQuery.')');
+        foreach ($ids as $i => $id)
+            $stmt->bindValue(($i+1), $id);
+        try{
+            if($stmt->execute())
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            else
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    function get_user_tickets($userId){
+        global $db;
+        if(isset($userId) && $userId){
+            if(!user_exists($userId))
+                return array("err"=>"User id ".$userId." not recognised","status"=>400);
+        } else {
+            if (session_status() == PHP_SESSION_NONE)
+                session_start();
+            if(!is_array($_SESSION['user']) || !$_SESSION['user']['id'])
+                return array("err"=>"User not logged in","status"=>500);
+            else
+                $userId = $_SESSION['user']['id'];
+        }
+        try{
+            $res = $db->query("SELECT * FROM tickets WHERE user_id = $userId")->fetchAll(PDO::FETCH_ASSOC);
+            $query = <<<EOF
+SELECT
+    event_ticket_type_id,
+    event_ticket_types.name AS event_ticket_type_name,
+    event_ticket_types.price AS event_ticket_type_price,
+    COUNT(event_ticket_type_id) AS quantity,
+    GROUP_CONCAT(tickets.id SEPARATOR ',') AS ids,
+    events.*
+FROM `tickets`
+INNER JOIN `event_ticket_types` on tickets.event_ticket_type_id = event_ticket_types.id
+INNER JOIN `events` on event_ticket_types.event_id = events.id
+WHERE
+    tickets.user_id = $userId AND
+    sold_ticket IS NULL AND
+    transferred_ticket IS NULL AND
+    events.start > DATE_SUB(NOW(), INTERVAL 6 MONTH)
+GROUP BY event_ticket_type_id
+ORDER BY events.start ASC, event_ticket_types.id ASC
+EOF;
+            $res = $db->query($query);
+            if($res)
+                return $res->fetchAll(PDO::FETCH_ASSOC);
+            else
+                return array("err"=>$db->errorInfo()[2],"status"=>500);
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    function get_user_upcoming_tickets($userId){
+        global $db;
+        if(isset($userId) && $userId){
+            if(!user_exists($userId))
+                return array("err"=>"User id ".$userId." not recognised","status"=>400);
+        } else {
+            if (session_status() == PHP_SESSION_NONE)
+                session_start();
+            if(!is_array($_SESSION['user']) || !$_SESSION['user']['id'])
+                return array("err"=>"User not logged in","status"=>500);
+            else
+                $userId = $_SESSION['user']['id'];
+        }
+        try{
+            /*$query = <<<EOF
+SELECT tickets.*
+FROM `tickets`
+INNER JOIN `event_ticket_types` on tickets.event_ticket_type_id = event_ticket_types.id
+INNER JOIN `events` on event_ticket_types.event_id = events.id
+WHERE tickets.user_id = $userId AND (
+    (events.end IS NOT NULL AND events.end > NOW())
+    OR
+    (events.end IS NULL AND events.start > DATE_SUB(NOW(), INTERVAL 4 HOUR))
+)
+ORDER BY events.start ASC
+EOF;*/
+            $query = <<<EOF
+SELECT
+    event_ticket_type_id,
+    event_ticket_types.name AS event_ticket_type_name,
+    event_ticket_types.price AS event_ticket_type_price,
+    COUNT(event_ticket_type_id) AS quantity,
+    GROUP_CONCAT(tickets.id SEPARATOR ',') AS ids,
+    events.*
+FROM `tickets`
+INNER JOIN `event_ticket_types` on tickets.event_ticket_type_id = event_ticket_types.id
+INNER JOIN `events` on event_ticket_types.event_id = events.id
+WHERE
+    tickets.user_id = $userId AND
+    selling_time IS NULL AND
+    transferred_ticket IS NULL AND (
+        (events.end IS NOT NULL AND events.end > NOW())
+        OR
+        (events.end IS NULL AND events.start > DATE_SUB(NOW(), INTERVAL 4 HOUR))
+    )
+GROUP BY event_ticket_type_id
+ORDER BY events.start ASC, event_ticket_types.id ASC
+EOF;
+            $res = $db->query($query);
+            if($res)
+                return $res->fetchAll(PDO::FETCH_ASSOC);
+            else
+                return array("err"=>$db->errorInfo()[2],"status"=>500);
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    function get_event_tickets($eventId){
+        global $db;
+        if(!isset($eventId) || !$eventId){
+            return array("err"=>"No event ID passed","status"=>500);
+        }
+        $query = <<<EOF
+SELECT tickets.*
+FROM tickets
+INNER JOIN `event_ticket_types` ON tickets.event_ticket_type_id = event_ticket_types.id
+INNER JOIN `events` ON event_ticket_types.event_id = events.id
+WHERE events.id = $eventId
+EOF;
+        $stmt = $db->prepare('SELECT * FROM tickets WHERE id = ? LIMIT 1');
+        $stmt->bindParam(1, $id);
+        try{
+            if($stmt->execute())
+                return $stmt->fetch(PDO::FETCH_ASSOC);
+            else
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    function update_ticket($id, $data){
+        global $db;
+        $allowed_keys = array("id","event_ticket_type_id","user_id","charge_id","time","bought_ticket","selling_time","selling_price","sold_ticket","transferred_from_ticket","transferring_to","transfer_price","transfer_time","transferred_ticket","used");
+        $keys = array_keys($data);
+        foreach ($keys as $key) {
+          if(!in_array($key, $allowed_keys)){
+            return array("err"=>"Unrecognised key: ".$key,"status"=>400);
+          }
+        }
+        $fields = '`'.implode('`= ?, `',$keys).'` = ?';
+        try{
+            $stmt = $db->prepare("UPDATE `tickets` SET $fields WHERE `id` = ?");
+            if($stmt->execute(array_merge(array_values($data),array($id)))){
+                $stmt = $db->prepare("SELECT * FROM `tickets` WHERE id = ?");
+                $stmt->execute($data["id"] ? $data["id"] : array($id));
+                return $stmt->fetch(PDO::FETCH_ASSOC);
+            }
+            else{
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+            }
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    function get_reselling($event_ticket_type_id){
+        global $db;
+        $stmt = $db->prepare('SELECT * FROM tickets WHERE event_ticket_type_id = ? AND selling_price IS NOT NULL AND sold_ticket IS NULL ORDER BY selling_time ASC LIMIT 1');
+        $stmt->bindParam(1, $event_ticket_type_id, PDO::PARAM_INT);
+        try{
+            if($stmt->execute()){
+                $res = $stmt->fetch(PDO::FETCH_ASSOC);
+                return $res;
+            } else
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    function delete_ticket($id){
+        global $db;
+        $stmt = $db->prepare('DELETE FROM ticket WHERE id = ? LIMIT 1');
+        $stmt->bindParam(1, $id);
+        try{
+            if($stmt->execute()){
+                return array("success"=>true);
+            } else{
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+            }
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    /* ==================================================================================== *
+       Multiple Tables
+     * ==================================================================================== */
+
+    function get_event_activity($eventId){
+        global $db;
+        if(!isset($eventId) || !$eventId){
+            return array("err"=>"No event ID passed","status"=>500);
+        }
+        $activity = array();
+        $query = <<<EOF
+SELECT
+    tickets.user_id,
+    'bought' AS action,
+    GROUP_CONCAT(tickets.event_ticket_type_id SEPARATOR ',') AS event_ticket_type_ids,
+    tickets.time
+FROM tickets
+INNER JOIN `event_ticket_types` ON tickets.event_ticket_type_id = event_ticket_types.id
+INNER JOIN `events` ON event_ticket_types.event_id = events.id
+WHERE
+    events.id = $eventId AND
+    tickets.bought_ticket IS NULL AND
+    tickets.transferred_from_ticket IS NULL
+GROUP BY tickets.time, tickets.user_id
+ORDER BY tickets.time DESC
+EOF;
+        $res = $db->query($query);
+        if($res)
+            $activity = array_merge($activity, $res->fetchAll(PDO::FETCH_ASSOC));
+        else
+            return array("err"=>$db->errorInfo()[2],"status"=>500);
+        $query = <<<EOF
+SELECT
+    (SELECT MIN(tickets2.user_id) FROM tickets AS tickets2 WHERE tickets2.id in (GROUP_CONCAT(tickets1.bought_ticket SEPARATOR ','))) AS `user_id`,
+    'resold' AS action,
+    GROUP_CONCAT(tickets1.event_ticket_type_id SEPARATOR ',') as event_ticket_type_ids,
+    tickets1.user_id AS `to`,
+    tickets1.time
+FROM tickets AS tickets1
+INNER JOIN `event_ticket_types` ON tickets1.event_ticket_type_id = event_ticket_types.id
+INNER JOIN `events` ON event_ticket_types.event_id = events.id
+WHERE
+    events.id = $eventId AND
+    tickets1.bought_ticket IS NOT NULL
+GROUP BY tickets1.time, tickets1.user_id
+ORDER BY tickets1.time DESC
+EOF;
+        $res = $db->query($query);
+        if($res)
+            $activity = array_merge($activity, $res->fetchAll(PDO::FETCH_ASSOC));
+        else
+            return array("err"=>$db->errorInfo()[2],"status"=>500);
+        $query = <<<EOF
+SELECT
+    (SELECT MIN(tickets2.user_id) FROM tickets AS tickets2 WHERE tickets2.id in (GROUP_CONCAT(tickets1.transferred_from_ticket SEPARATOR ','))) AS `user_id`,
+    'transferred' AS action,
+    GROUP_CONCAT(tickets1.event_ticket_type_id SEPARATOR ',') as event_ticket_type_ids,
+    tickets1.user_id AS `to`,
+    tickets1.time
+FROM tickets AS tickets1
+INNER JOIN `event_ticket_types` ON tickets1.event_ticket_type_id = event_ticket_types.id
+INNER JOIN `events` ON event_ticket_types.event_id = events.id
+WHERE
+    events.id = $eventId AND
+    tickets1.transferred_from_ticket IS NOT NULL
+GROUP BY tickets1.time, tickets1.user_id
+ORDER BY tickets1.time DESC
+EOF;
+        $res = $db->query($query);
+        if($res)
+            $activity = array_merge($activity, $res->fetchAll(PDO::FETCH_ASSOC));
+        else
+            return array("err"=>$db->errorInfo()[2],"status"=>500);
+        $query = <<<EOF
+SELECT
+    tickets.user_id,
+    'listed for sale' AS action,
+    GROUP_CONCAT(tickets.event_ticket_type_id SEPARATOR ',') AS event_ticket_type_ids,
+    tickets.selling_time AS time
+FROM tickets
+INNER JOIN `event_ticket_types` ON tickets.event_ticket_type_id = event_ticket_types.id
+INNER JOIN `events` ON event_ticket_types.event_id = events.id
+WHERE
+    events.id = $eventId AND
+    tickets.sold_ticket IS NULL AND
+    tickets.selling_time IS NOT NULL
+GROUP BY tickets.selling_time, tickets.user_id
+ORDER BY tickets.selling_time DESC
+EOF;
+        $res = $db->query($query);
+        if($res)
+            $activity = array_merge($activity, $res->fetchAll(PDO::FETCH_ASSOC));
+        else
+            return array("err"=>$db->errorInfo()[2],"status"=>500);
+        $event = get_event($eventId);
+        array_push($activity, array("user_id"=>$event["user_id"],"action"=>"created the event","time"=>$event["created"]));
+        function cmp($a, $b){
+            if ($a["time"] == $b["time"])
+                return 0;
+            return ((new DateTime($a["time"])) < (new DateTime($b["time"]))) ? 1 : -1;
+        }
+        usort($activity, "cmp");
+        return $activity;
+    }
+
+    function get_event_stats($eventId){
+        global $db;
+        if(!isset($eventId) || !$eventId){
+            return array("err"=>"No event ID passed","status"=>500);
+        }
+        //$stats = ...
+        $stats = array(
+            "weekSales"=>array(
+                array(array(0,55),array(1,48),array(2,60),array(3,36),array(4,40),array(5,60),array(6,50),array(7,51)),
+                array(array(0,0),array(1,0),array(2,0),array(3,0),array(4,0),array(5,67),array(6,57),array(7,59))
+            ),
+            "revenue"=>array(array(0,0),array(1,10),array(2,26),array(3,26),array(4,36),array(5,38),array(6,51)),
+            "gender"=>array("male"=>38,"female"=>40,"unknown"=>22),
+            "age"=>array(
+                array(0,11), //Under 18
+                array(1,15), //18-21
+                array(2,25), //22-25
+                array(3,24), //26-30
+                array(4,13)  //Over 30
+            )
+        );
+        return $stats;
+    }
+
+    /* ==================================================================================== *
+       User Recovery Table
+     * ==================================================================================== */
+
+    function insert_user_recovery($data){
+        global $db;
+        $required_keys = array("user_id","selector","hash");
+        foreach($required_keys as $required){
+          if(!isset($data[$required]) || !$data[$required])
+            return array("err"=>"Missing required key: ".$required,"status"=>400);
+        }
+        $allowed_keys = array("user_id","selector","hash","expires");
+        $keys = array_keys($data);
+        foreach ($keys as $key) {
+          if(!in_array($key, $allowed_keys)){
+            return array("err"=>"Unrecognised key: ".$key,"status"=>400);
+          }
+        }
+        if(!isset($data["expires"]) || !$data["expires"]){
+          $expires = (new DateTime())->add(new DateInterval('PT01H')); // 1 hour
+          $data["expires"] = $expires->format('Y-m-d H:i:s');
+          $keys = array_keys($data);
+        }
+        $fields = '`'.implode('`, `',$keys).'`';
+        $placeholder = rtrim(str_repeat('?,', count($keys)), ",");
+        try{
+            $stmt = $db->prepare("INSERT INTO `user_recovery` ($fields) VALUES ($placeholder)");
+            if($stmt->execute(array_values($data))){
+                $id = $db->lastInsertId();
+                $res = $db->query("SELECT * FROM `user_recovery` WHERE id = ".$id);
+                if($res)
+                    return $res->fetch(PDO::FETCH_ASSOC);
+                else
+                    return array("err"=>$db->errorInfo()[2],"status"=>500);
+            } else{
+                return array("err"=>"Execute failed: ".$stmt->errorInfo()[2],"status"=>500);
+            }
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    function user_recovery_exists($id){
+        global $db;
+        $stmt = $db->prepare('SELECT COUNT(id) FROM user_recovery WHERE id = ? LIMIT 1');
+        $stmt->bindParam(1, intval($id), PDO::PARAM_INT);
+        if($stmt->execute()){
+            return (bool)($stmt->fetchColumn());
+        } else
+            return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+    }
+
+    function get_user_recovery($id){
+        global $db;
+        $stmt = $db->prepare('SELECT * FROM `user_recovery` WHERE id = ? LIMIT 1');
+        $stmt->bindParam(1, $id, PDO::PARAM_INT);
+        try{
+            if($stmt->execute()){
+                $res = $stmt->fetch(PDO::FETCH_ASSOC);
+                return $res;
+            } else{
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+            }
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    function validate_user_recovery($selector, $validator, $token){
+        global $db;
+        $stmt = $db->prepare('SELECT * FROM `user_recovery` WHERE selector = ?');
+        $stmt->bindParam(1, $selector, PDO::PARAM_STR);
+        try{
+            if($stmt->execute()){
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                if(!$row || empty($row))
+                    return array("err"=>"Reset link not recognised, perhaps it has expired or been used. Please request a new email if you still need to reset your password.","status"=>400);
+                if((new DateTime($row['expires'])) < (new DateTime())){
+                  return array("err"=>"This link has expired. Please request a new email if you still need to reset your password.","status"=>400);
+                }
+                if(!is_null($row['token'])){
+                  if(!isset($token) || $token!==$row['token'])
+                    return array("err"=>"This link has been used. Please request a new email if you need to reset your password again.","status"=>400);
+                }
+                $hash = hash('sha256', hex2bin($validator));
+                if(hash_equals($hash, $row['hash'])){
+                  return $row;
+                } else {
+                  return array("err"=>"Reset link not recognised. Please request a new email if you still need to reset your password.","status"=>400);
+                }
+            } else{
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+            }
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    function set_used_user_recovery($id){
+        global $db;
+        $token = bin2hex(random_bytes(8));
+        try{
+            $stmt = $db->prepare("UPDATE `user_recovery` SET `token` = ? WHERE `id` = ?");
+            if($stmt->execute(array($token,$id))){
+                return array("id"=>$id,"token"=>$token);
+            }
+            else{
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+            }
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }
+
+    /*function update_user_recovery($id, $data){
+        global $db;
+        $keys = array_keys($data);
+        $allowed_keys = array("id","user_id","selector","hash","used");
+        foreach ($keys as $key) {
+          if(!in_array($key, $allowed_keys)){
+            return array("err"=>"Unrecognised key: ".$key,"status"=>400);
+          }
+        }
+        $fields = '`'.implode('`= ?, `',$keys).'` = ?';
+        try{
+            $stmt = $db->prepare("UPDATE `user_recovery` SET $fields WHERE `id` = ?");
+            if($stmt->execute(array_merge(array_values($data),array($id)))){
+                $stmt = $db->prepare("SELECT * FROM `user_recovery` WHERE id = ?");
+                if($stmt->execute($data["id"] ? array($data["id"]) : array($id)))
+                    return $stmt->fetch(PDO::FETCH_ASSOC);
+                else
+                    return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+            }
+            else{
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+            }
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }*/
+
+    function delete_user_recovery($id){
+        global $db;
+        $stmt = $db->prepare('DELETE FROM user_recovery WHERE id = ? LIMIT 1');
+        $stmt->bindParam(1, $id, PDO::PARAM_INT);
+        try{
+            if($stmt->execute()){
+                return array("success"=>true);
+            } else{
+                return array("err"=>$stmt->errorInfo()[2],"status"=>500);
+            }
+        } catch(Exception $e){
+            return array("err"=>$e->getMessage()?$e->getMessage():"Unknown error occured","status"=>500);
+        }
+    }

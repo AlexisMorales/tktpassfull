@@ -1,0 +1,16 @@
+RewriteEngine On
+DirectoryIndex api.php
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ api.php [QSA,L]
+
+#<FilesMatch "config\.php|function\.php|include\.php">
+
+<FilesMatch "bookings\.php">
+	AuthType Basic
+	AuthName "Authentication Required"
+    AuthUserFile /var/www/.htpasswds/.dev.htpasswd
+    Require valid-user
+</FilesMatch> 
+        

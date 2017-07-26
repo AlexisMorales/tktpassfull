@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>tktpass</title>
+    <!-- Path to Framework7 Library CSS-->
+    <link rel="stylesheet" href="css/framework7.ios.min.css">
+    <link rel="stylesheet" href="css/framework7.ios.colors.min.css">
+    <!-- Path to your custom app styles-->
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+    <!-- Status bar overlay for fullscreen mode-->
+    <div class="statusbar-overlay"></div>
+    <!-- Panels overlay-->
+    <div class="panel-overlay"></div>
+
+    <!-- Left panel with reveal effect-->
+    <div class="panel panel-left panel-reveal">
+      <div class="content-block">
+        <p>&copy; tktpass, 2017.</p>
+      </div>
+    </div>
+    <!-- Right panel with cover effect-->
+    <div class="panel panel-right panel-cover">
+      <div class="content-block">
+        <p>Right panel content goes here</p>
+      </div>
+    </div>
+
+    <!-- Views with tabs class for tabbed views-->
+    <div class="views tabs">
+
+      <!-- Your main view, should have "view-main" class-->
+      <!-- tab class to indicate this is one of the tabs and active as it is the default-->
+      <div id="view-main" class="view view-main tab active">
+        <!-- Top Navbar-->
+        <div class="navbar">
+          <div class="navbar-inner">
+            <!-- We have home navbar without left link-->
+            <div class="center sliding">tktpass</div>
+            <!--div class="right">
+              <!- Right link contains only icon - additional "icon-only" class-><a href="#" class="link icon-only open-panel"> <i class="icon icon-bars"></i></a>
+            </div-->
+          </div>
+        </div>
+        <!-- Pages, because we need fixed-through navbar and toolbar it has additional appropriate classes-->
+        <div class="pages navbar-through toolbar-through">
+          <!-- Page, data-page contains page name-->
+          <div data-page="home-index" class="page">
+            <!-- Scrollable page content-->
+            <div class="page-content with-bg">
+              <div class="content-block-title">Welcome To tktpass</div>
+              <div class="content-block">
+                <div class="content-block-inner">
+                  <p>Revolutionise the way you manage your events.</p>
+                  <p>To start: <a href="#" class="open-login-screen">login</a>.</p>
+                </div>
+              </div>
+            </div>
+            <!-- /page-content -->
+          </div>
+          <!-- /page -->
+        </div>
+        <!-- /pages -->
+      </div>
+      <!-- /view-main -->
+
+      <!-- List view with tab class to indicate this is one of the tabs -->
+      <div id="view-list" class="view view-list tab">
+        <!-- Top Navbar-->
+        <div class="navbar">
+          <div class="navbar-inner">
+            <!-- Left link contains only icon - additional "icon-only" class on anchor -->
+            <div class="left">
+              <a href="#" class="link icon-only open-panel"><i class="icon icon-bars"></i></a>
+            </div>
+            <!-- We have navbar without right link-->
+            <div class="center sliding">Guestlist</div>
+          </div>
+        </div>
+        <!-- Pages, because we need fixed-through navbar and toolbar it has additional appropriate classes-->
+        <div class="pages navbar-through toolbar-through">
+          <!-- Page, data-page contains page name-->
+          <div data-page="list-index" class="page">
+            <!-- Scrollable page content-->
+            <div class="page-content">
+              <!-- Search bar with data attributes and init class to have f7 initalise the search bar for us -->
+              <form data-search-list=".search-here" data-search-in=".item-title" class="searchbar searchbar-init">
+                <div class="searchbar-input">
+                  <input placeholder="Search" type="search">
+                  <a href="#" class="searchbar-clear"></a>
+                </div><a href="#" class="searchbar-cancel">Cancel</a>
+              </form>
+              <!-- Search bar overlay-->
+              <div class="searchbar-overlay"></div>
+
+              <div class="content-block-title">Event Name <small>12 January 2018</small></div>
+
+              <!-- Displayed if the search returns no results, hidden by default -->
+              <div class="list-block searchbar-not-found">
+                <ul>
+                  <li class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title">Nothing found</div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- List block includes classes to let search bar know where to look -->
+              <div class="list-block search-here searchbar-found">
+                <div class="list-group">
+                  <ul>
+                    <li class="list-group-title">A</li>
+                    <li class="swipeout">
+                      <div class="swipeout-content item-content">
+                        <div class="item-inner">
+                          <div class="item-title">Aaron </div>
+                        </div>
+                      </div>
+                      <div class="swipeout-actions-right">
+                        <a href="#" class="checkin bg-green swipeout-overswipe">Check In</a>
+                      </div>
+                    </li>
+                    <li class="swipeout">
+                      <div class="swipeout-content item-content">
+                        <div class="item-inner">
+                          <div class="item-title">Abbie </div>
+                        </div>
+                      </div>
+                      <div class="swipeout-actions-right">
+                        <a href="#" class="checkin bg-green swipeout-overswipe">Check In</a>
+                      </div>
+                    </li>
+                    <li class="swipeout">
+                      <div class="swipeout-content item-content">
+                        <div class="item-inner">
+                          <div class="item-title">Adam </div>
+                        </div>
+                      </div>
+                      <div class="swipeout-actions-right">
+                        <a href="#" class="checkin bg-green swipeout-overswipe">Check In</a>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <div class="list-group">
+                  <ul>
+                    <li class="list-group-title">B</li>
+                    <li class="swipeout">
+                      <div class="swipeout-content item-content">
+                        <div class="item-inner">
+                          <div class="item-title">Bailey </div>
+                        </div>
+                      </div>
+                      <div class="swipeout-actions-right">
+                        <a href="#" class="checkin bg-green swipeout-overswipe">Check In</a>
+                      </div>
+                    </li>
+                    <li class="swipeout">
+                      <div class="swipeout-content item-content">
+                        <div class="item-inner">
+                          <div class="item-title swipeout-overswipe">Barclay </div>
+                        </div>
+                      </div>
+                      <div class="swipeout-actions-right">
+                        <a href="#" class="checkin bg-green swipeout-overswipe">Check In</a>
+                      </div>
+                    </li>
+                    <li class="swipeout">
+                      <div class="swipeout-content item-content">
+                        <div class="item-inner">
+                          <div class="item-title">Bartolo </div>
+                        </div>
+                      </div>
+                      <div class="swipeout-actions-right">
+                        <a href="#" class="checkin bg-green swipeout-overswipe">Check In</a>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <div class="list-group">
+                  <ul>
+                    <li class="list-group-title">C</li>
+                    <li class="swipeout">
+                      <div class="swipeout-content item-content">
+                        <div class="item-inner">
+                          <div class="item-title">Caiden </div>
+                        </div>
+                      </div>
+                      <div class="swipeout-actions-right">
+                        <a href="#" class="checkin bg-green swipeout-overswipe">Check In</a>
+                      </div>
+                    </li>
+                    <li class="swipeout">
+                      <div class="swipeout-content item-content">
+                        <div class="item-inner">
+                          <div class="item-title">Calvin </div>
+                        </div>
+                      </div>
+                      <div class="swipeout-actions-right">
+                        <a href="#" class="checkin bg-green swipeout-overswipe">Check In</a>
+                      </div>
+                    </li>
+                    <li class="swipeout">
+                      <div class="swipeout-content item-content">
+                        <div class="item-inner">
+                          <div class="item-title">Candy </div>
+                        </div>
+                      </div>
+                      <div class="swipeout-actions-right">
+                        <a href="#" class="checkin bg-green swipeout-overswipe">Check In</a>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <div class="list-group">
+                  <ul>
+                    <li class="list-group-title">D</li>
+                    <li class="swipeout">
+                      <div class="swipeout-content item-content">
+                        <div class="item-inner">
+                          <div class="item-title">Daniel </div>
+                        </div>
+                      </div>
+                      <div class="swipeout-actions-right">
+                        <a href="#" class="checkin bg-green swipeout-overswipe">Check In</a>
+                      </div>
+                    </li>
+                    <li class="swipeout">
+                      <div class="swipeout-content item-content">
+                        <div class="item-inner">
+                          <div class="item-title">David </div>
+                        </div>
+                      </div>
+                      <div class="swipeout-actions-right">
+                        <a href="#" class="checkin bg-green swipeout-overswipe">Check In</a>
+                      </div>
+                    </li>
+                    <li class="swipeout">
+                      <div class="swipeout-content item-content">
+                        <div class="item-inner">
+                          <div class="item-title">Drew </div>
+                        </div>
+                      </div>
+                      <div class="swipeout-actions-right">
+                        <a href="#" class="checkin bg-green swipeout-overswipe">Check In</a>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <!-- /page-content -->
+          </div>
+          <!-- /page -->
+        </div>
+        <!-- /pages -->
+      </div>
+      <!-- /view-list -->
+
+      <!-- Settings view with tab class to indicate this is one of the tabs -->
+      <div id="view-settings" class="view view-settings tab">
+        <!-- Top Navbar-->
+        <div class="navbar">
+          <div class="navbar-inner">
+            <!-- We have home navbar without links -->
+            <div class="center sliding">Settings</div>
+          </div>
+        </div>
+        <!-- Pages, because we need fixed-through navbar and toolbar it has additional appropriate classes-->
+        <div class="pages navbar-through toolbar-through">
+          <!-- Page, data-page contains page name-->
+          <div data-page="settings-index" class="page">
+            <!-- Scrollable page content-->
+            <div class="page-content">
+              <div class="content-block-title">General</div>
+              <div class="list-block">
+                <ul>
+                  <li>
+                    <a href="about.html" class="item-link">
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-title">About</div>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" class="item-link" onclick="window.app.showIndicator();setTimeout(function (){window.app.hideIndicator();window.app.alert('You have the latest version installed.', 'tktpass')},2000);">
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-title">Software Update</div>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div class="content-block-title">Options</div>
+              <div class="list-block">
+                <!-- Form with store-data class allows us to use getFormData -->
+                <form id="form-options" class="store-data">
+                  <ul>
+                    <li>
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-title label">Confirm check-in</div>
+                          <div class="item-input">
+                            <label class="label-switch">
+                              <!-- Inout must have a name attribute for use with getFormData -->
+                              <input name="confirm" type="checkbox">
+                              <div class="checkbox"></div>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-title label">Overswipe to check-in</div>
+                          <div class="item-input">
+                            <label class="label-switch">
+                              <!-- Inout must have a name attribute for use with getFormData -->
+                              <input type="checkbox"  name="overswipe" checked>
+                              <div class="checkbox"></div>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </form>
+              </div>
+              <div class="content-block help-text">
+                <p>Overswipe allows you to check-in a guest simply by swiping their name far enough to the left, removing the requirement to actually click the check-in button that appears.</p>
+              </div>
+              <div class="list-block">
+                <ul>
+                  <li>
+                    <a href="#">
+                      <div class="item-content">
+                        <div class="item-inner">
+                          <div class="item-title color-red">Log out</div>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <!-- /page-content -->
+          </div>
+          <!-- /page -->
+        </div>
+        <!-- /pages -->
+      </div>
+      <!-- /view-settings -->
+
+      <div id="view-login-wrap" class="login-screen">
+        <div id="view-login" class="view view-login">
+          <div class="page">
+            <div class="page-content login-screen-content">
+              <div class="login-screen-title">tktpass</div>
+              <form>
+                <div class="list-block">
+                  <ul>
+                    <li class="item-content">
+                      <div class="item-inner">
+                        <div class="item-title label">Username</div>
+                        <div class="item-input">
+                          <input type="text" name="username" placeholder="Your username">
+                        </div>
+                      </div>
+                    </li>
+                    <li class="item-content">
+                      <div class="item-inner">
+                        <div class="item-title label">Password</div>
+                        <div class="item-input">
+                          <input type="password" name="password" placeholder="Your password">
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <div class="list-block">
+                  <ul>
+                    <li><a href="#" class="item-link list-button">Sign In</a></li>
+                  </ul>
+                  <div class="list-block-label">
+                    <p>tktpass. Making events happen.</p>
+                    <p><a href="#" class="close-login-screen">Close Login Screen</a></p>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <!-- /page-content -->
+          </div>
+          <!-- /page -->
+        </div>
+        <!-- /view-login -->
+      </div>
+      <!-- /view-login-wrap -->
+
+      <div class="toolbar tabbar tabbar-labels">
+        <div class="toolbar-inner">
+          <a href="#" data-tab="#view-main" class="active tab-link"><i class="icon iconfont icon-ios7homeoutline"></i><span class="tabbar-label">Home</span></a>
+          <a href="#" data-tab="#view-list" class="tab-link"><i class="icon iconfont icon-ios7chatbubbleoutline"></i><span class="tabbar-label">Guestlist</span></a>
+          <a href="#" data-tab="#view-settings" class="tab-link"><i class="icon iconfont icon-ios7gearoutline"></i><span class="tabbar-label">Settings</span></a>
+        </div>
+      </div>
+
+    </div>
+    <!-- /views -->
+
+    <!-- Path to Framework7 Library JS-->
+    <script type="text/javascript" src="js/framework7.min.js"></script>
+    <!-- Path to your app js-->
+    <script type="text/javascript" src="js/script.js"></script>
+  </body>
+</html>

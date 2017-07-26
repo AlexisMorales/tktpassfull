@@ -1,0 +1,397 @@
+/* #########
+ * # Modal #
+ * #########
+ */
+
+/* .modal-fullscreen */
+
+.modal-fullscreen {
+  background: transparent;
+}
+.modal-fullscreen .modal-content {
+  background: transparent;
+  border: 0;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.modal-fullscreen .modal-backdrop {
+  background: #ffffff;
+}
+.modal-fullscreen .modal-backdrop.in {
+  opacity: .97;
+  filter: alpha(opacity=97);
+}
+
+/* .modal-fullscreen size: we use Bootstrap media query breakpoints */
+
+.modal-fullscreen .modal-dialog {
+  margin: 0;
+  margin-right: auto;
+  margin-left: auto;
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .modal-fullscreen .modal-dialog {
+    width: 750px;
+  }
+}
+@media (min-width: 992px) {
+  .modal-fullscreen .modal-dialog {
+    width: 970px;
+  }
+}
+@media (min-width: 1200px) {
+  .modal-fullscreen .modal-dialog {
+     width: 1170px;
+  }
+}
+
+/*
+ * Buy
+ */
+
+ .buy-modal .modal-dialog {
+    width: auto;
+}
+
+@media (min-width: 512px) {
+  .buy-modal .modal-dialog {
+    width: 360px;
+    margin: 30px auto 0;
+  }
+}
+
+.buy-modal .modal-header{
+    text-align: center;
+    color: #fff;
+    display: table;
+    height: 10em;
+    width:100%;
+    padding: 0;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+}
+
+.buy-modal .modal-header .close {
+    float: none;
+    position:absolute;
+    right: 10px;
+    top: 10px;
+    color: #fff;
+    opacity: 1;
+}
+
+.buy-modal .modal-header .modal-title{
+    background-color: rgba(0,0,0,0.4);
+    display: table-cell;
+    vertical-align: middle;
+    font-size: 2em;
+}
+
+.buy-modal .modal-header .info {
+    position:absolute;
+    width: 100%;
+    left: 0px;
+    bottom: 0px;
+}
+
+.buy-modal .modal-header .info p {
+    text-align:left;
+    max-width: 50%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.buy-modal .modal-header .info p.date {
+    float: left;
+    margin-left: 1em;
+}
+
+.buy-modal .modal-header .info p.location {
+    float: right;
+    margin-right: 1em;
+}
+
+.buy-modal .modal-header .info p i {
+    margin-right: 0.5em;
+}
+
+.buy-modal .modal-body {
+    font-weight: 300;
+}
+
+.buy-modal .modal-body table{
+    width: 100%;
+}
+
+.buy-modal .modal-body .step-1 table{
+    margin-bottom: 2em;
+}
+
+.buy-modal .modal-body .step-1 table th{
+    padding: 0.5em 1em;
+    font-weight: 400;
+    font-style: italic;
+    color: #999;
+}
+
+.buy-modal .modal-body .step-1 table tbody td{
+    padding: 0 1em;
+    background-color: rgb(242,242,242);
+    vertical-align: middle;
+}
+
+.buy-modal .modal-body .step-1 table tbody td.tickets{
+    color: #5ac336;
+}
+
+.buy-modal .modal-body .step-1 table tbody td.price{
+    font-style: italic;
+    color: #666;
+}
+
+.buy-modal .modal-body .step-1 table tbody td.quantity a {
+    line-height: 3em;
+}
+
+.buy-modal .modal-body .step-1 table tbody td.quantity a img {
+    vertical-align: text-bottom;
+    height: 2.2em;
+    max-height: 100%;
+}
+
+.buy-modal .modal-body .step-1 table tbody td.quantity a:first-child {
+    margin-right:0.5em;
+}
+
+.buy-modal .modal-body .step-1 table tbody td.quantity span {
+    font-size: 3em;
+    color: #5ac336;
+    margin-right:0.16666666666em;
+}
+
+.buy-modal .modal-body .step-1 table tbody td.quantity a:hover,
+.buy-modal .modal-body .step-1 table tbody td.quantity a:focus {
+    text-decoration: none;
+    color: #111;
+}
+
+.buy-modal .modal-body .step-1 table tbody td.spacer{
+    padding: 0.25em;
+    background: none;
+}
+
+.buy-modal .modal-body .step-1 p{
+    text-align: right;
+    color: #777;
+    font-style: italic;
+}
+
+.buy-modal .modal-body .step-2 table th {
+    color: #5ac336;
+    font-weight: 300;
+}
+
+.buy-modal .modal-body .step-2 table td {
+    color: #888;
+    font-style: italic;
+    font-weight: 300;
+}
+
+.buy-modal .modal-body .step-2 table td.spacer{
+    padding: 0.5em;
+    background: none;
+}
+
+.buy-modal .modal-body .step-2 table td.saving{
+    color: #5ac336;
+    text-align: right;
+}
+
+.buy-modal .modal-body .step-2 table td.sub {
+    text-align: right;
+    width: 50px;
+}
+
+.buy-modal .modal-body .step-2 table tfoot td:first-child {
+    color: #5ac336;
+}
+
+.buy-modal .modal-body .step-2 table tfoot td:last-child span {
+    /* font-weight: 400; */
+    border-top: 1px solid;
+}
+
+.buy-modal .modal-body .step-2 table tfoot td.sub {
+    font-weight: normal;
+}
+
+.buy-modal .modal-body .step-2 .cc-brand-wrap {
+    margin-bottom: 1em;
+}
+
+.buy-modal .modal-body #payment-form {
+    width: 250px;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.buy-modal .modal-body #payment-form input:focus,
+.buy-modal .modal-body #payment-form .focus input,
+.buy-modal .modal-body #payment-form .has-success input {
+    box-shadow: none;
+    border-color: #5ac336;
+}
+
+.buy-modal .modal-body #payment-form .payment-errors {
+    margin-bottom: 0;
+    color: #dc4c2e;
+    font-weight: 300;
+    text-align: center;
+}
+
+.buy-modal .modal-footer {
+    border-top: none;
+    text-align: center;
+}
+
+.buy-modal .modal-footer .step-1 .btn {
+    width: 200px;
+    max-width: 100%;
+}
+
+.buy-modal .modal-footer .btn i {
+    margin-left: 0.5em;
+}
+
+.buy-modal .modal-footer .btn i:first-child {
+    margin-left: 0.5em;
+    font-weight: 300;
+}
+
+.buy-modal .modal-footer .step-2 .btn-default {
+    font-size: 0.7em;
+    padding: 0;
+    float:left;
+    margin-top: 0.9em;
+    border: 0;
+}
+
+.buy-modal .modal-footer .step-2 .btn-default:hover {
+    background: none;
+    text-decoration: underline;
+}
+
+.buy-modal .modal-footer .step-2 .btn-outline-green {
+    margin-left:-21px;
+    width: 200px;
+}
+
+.buy-modal .modal-aside {
+    background-color: #f2f2f2;
+    position: absolute;
+    top: -1px;
+    right: -20em;
+    width: 20em;
+    padding: 1em;
+    text-align: center;
+}
+
+.buy-modal .modal-aside h4 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.buy-modal .modal-aside h4 span {
+    font-weight: 600;
+    color: #5ac336;
+}
+
+.buy-modal .modal-aside ul {
+    text-align: left;
+}
+
+.buy-modal .modal-aside big {
+    font-size: 2em;
+}
+
+.buy-modal .modal-aside small {
+    color: #999;
+    font-size: 70%;
+    font-weight: 300;
+}
+
+.buy-modal .modal-aside .btn {
+    font-weight: 200;
+    text-transform: uppercase;
+}
+
+.buy-modal .modal-aside .btn .outer-circle {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border: 1px solid #fff;
+    border-radius: 50%;
+    margin-right: 0.5em;
+    margin-bottom: -0.12em;
+    padding: 1px;
+    overflow:hidden;
+}
+
+.buy-modal .modal-aside .btn .inner-circle {
+    display: block;
+    width: 11px;
+    height: 11px;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    background: transparent;
+    transition: 0.2s background ease;
+}
+
+.buy-modal .modal-aside .btn .inner-circle.checked {
+    background-color: #fff;
+}
+
+.buy-modal .step-3 {
+    text-align: center;
+}
+
+.buy-modal .friend-heads .friend {
+    display:inline-block;
+    width:3em;
+    margin-right: 0.5em;
+}
+
+.buy-modal .friend-heads .friend img {
+    display:block;
+}
+
+.buy-modal .friend-heads .friend small {
+    color:#888;
+    font-style:italic;
+    font-size: 0.67em;
+}
+
+/*
+ * Resell
+ */
+
+.resell-modal .modal-header{
+    text-align: center;
+    display: table;
+    width:100%;
+    padding: 0;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+}
+
+.resell-modal .modal-header .close {
+    float: none;
+    position:absolute;
+    right: 12px;
+    top: 8px;
+    opacity: 1;
+}

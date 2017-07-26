@@ -1,0 +1,131 @@
+/* ##########
+ * # Navbar #
+ * ##########
+ */
+body {
+    padding-top: 54px;
+}
+
+.navbar-default {
+    background-color: #fff;
+    border: none;
+    border-bottom: 1px solid transparent;
+    border-color: rgba(34,34,34,.05);
+    transition: all .35s;
+}
+
+.navbar-default .navbar-header .navbar-brand {
+    padding:8px;
+}
+
+.navbar-default .navbar-header .navbar-brand img {
+    max-height: 100%;
+}
+
+/*.navbar-default .navbar-header .navbar-brand img:focus,.navbar-default .navbar-header .navbar-brand img:hover {
+    opacity: .95;
+}*/
+
+.navbar-default .navbar-header .navbar-brand.navbar-brand-white {
+    display:none;
+    height: 70px;
+}
+
+.navbar-default .navbar-header .navbar-toggle {
+    font-weight: 700;
+    font-size: 12px;
+    color: #222;
+    text-transform: uppercase
+}
+
+.navbar-default .nav>li>a,.navbar-default .nav>li>a:focus {
+    font-size: 17px;
+    color: #222;
+}
+
+.navbar-default .nav>li>a:focus,.navbar-default .nav>li>a:hover,.navbar-default .nav>li>a:active {
+    color: #5ac336;
+    box-shadow: none;
+}
+
+.navbar-default .nav>li.active>a,.navbar-default .nav>li.active>a:focus {
+    color: #F05F40!important;
+    background-color: transparent
+}
+
+.navbar-default .nav>li.active>a:focus:hover,.navbar-default .nav>li.active>a:hover {
+    background-color: transparent;
+}
+
+@media (min-width: 768px) {
+    body {
+        padding-top: 0;
+    }
+    .navbar-default {
+        background-color:transparent;
+        border: none;
+    }
+
+    .navbar-default .navbar-header .navbar-brand.navbar-brand-black {
+        display: none;
+    }
+
+    .navbar-default .navbar-header .navbar-brand.navbar-brand-white {
+        display:block;
+    }
+
+    .navbar-default .navbar-nav {
+        margin-top: 15px;
+        margin-right: 0;
+        transition: margin-top 0.2s ease;
+    }
+
+    .navbar-default.affix .navbar-nav {
+        margin-top: 0px;
+        height: 50px;
+    }
+    .navbar-nav > li {
+      height: 50px;
+      line-height: 50px;
+    }
+    .navbar-default .nav>li>a,.navbar-default .nav>li>a:focus {
+        color: #fff;
+    }
+
+    .navbar-default .nav>li>a:focus:hover,.navbar-default .nav>li>a:hover {
+        color: rgba(255,255,255,0.8);
+    }
+
+    .navbar-default.affix {
+        background-color: #fff;
+        border-bottom: 1px solid;
+        border-color: rgba(217,217,217,.8)
+    }
+
+    .navbar-default.affix .navbar-header .navbar-brand.navbar-brand-white {
+        display:none;
+    }
+
+    .navbar-default.affix .navbar-header .navbar-brand.navbar-brand-black {
+        display:block;
+    }
+
+    .navbar-default.affix .navbar-header .navbar-brand.navbar-brand-black img {
+        opacity: 1;
+    }
+
+    .navbar-default.affix .nav>li>a,.navbar-default.affix .nav>li>a:focus {
+        color: #222;
+    }
+
+    .navbar-default.affix .nav>li>a:focus:hover,.navbar-default.affix .nav>li>a:hover {
+        color: #5ac336;
+    }
+  
+    .navbar-default.affix .nav>li:last-child>a {
+      transition: border 1s ease;
+      border-left: 1px solid #ddd;
+      padding: 11px 24px 6px 20px;
+      margin-right: -14px;
+    }
+}

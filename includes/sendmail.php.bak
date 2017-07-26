@@ -1,0 +1,183 @@
+<?php
+
+require "/var/www/includes/PHPMailer/PHPMailerAutoload.php";
+
+function generateMessageID(){
+  return sprintf(
+    "<%s-%s@%s>",
+    base_convert(microtime(), 10, 36),
+    base_convert(bin2hex(openssl_random_pseudo_bytes(8)), 16, 36),
+    $_SERVER['SERVER_NAME']
+  );
+}
+
+function sendResetEmail($email,$name,$selector,$validator) {
+  $stamp = time();
+  $templateDir = "/var/www/includes/email-templates/";
+  $body = file_get_contents($templateDir.'reset-email.html');
+  $body = str_replace('%%NAME%%',htmlspecialchars($name),$body);
+  $body = str_replace('%%SELECTOR%%',htmlspecialchars(urlencode($selector)),$body);
+  $body = str_replace('%%VALIDATOR%%',htmlspecialchars(urlencode($validator)),$body);
+
+  $headers = 'MIME-Version: 1.0' . PHP_EOL .
+    'Content-Type: text/html; charset=UTF-8' . PHP_EOL .
+    'From: tktpass Team <no-reply@tktpass.com>' . PHP_EOL .
+    'Reply-To: tktpass Team <support@tktpass.com>' . PHP_EOL .
+    'To: '. $email . PHP_EOL .
+    'Subject: =?utf-8?B?'. base64_encode('Reset password | tktpass') ."?=" . PHP_EOL .
+    'Date: ' . date(DATE_RFC2822, $stamp) . PHP_EOL .
+    'Envelope-To: '. $email .PHP_EOL .
+    'Message-ID: ' . generateMessageID() . PHP_EOL .
+    'Content-Transfer-Encoding: 8bit' . PHP_EOL .
+    'X-Priority: 3' . PHP_EOL .
+    'X-Mailer: PHP/' . phpversion() . PHP_EOL;
+
+  $mail = new PHPMailer;
+ 
+  $mail->isSMTP();                                      // Set mailer to use SMTP
+  $mail->Host = 'smtp.gmail.com';                       // Specify main and backup server
+  $mail->SMTPAuth = true;                               // Enable SMTP authentication
+  $mail->Username = 'contact@tktpass.com';              // SMTP username
+  $mail->Password = 'TKTPASS15!';                       // SMTP password
+  $mail->SMTPSecure = 'tls';                            // Enable encryption, 'ssl' also accepted
+  $mail->Port = 587;                                    //Set the SMTP port number - 587 for authenticated TLS
+  $mail->setFrom('no-reply@tktpass.com', 'tktpass Team');  //Set who the message is to be sent from
+  $mail->addReplyTo('contact@tktpass.com', 'tktpass Team');  //Set an alternative reply-to address
+  $mail->addAddress($email);                            // Add a recipient
+  $mail->WordWrap = 50;                                 // Set word wrap to 50 characters
+  $mail->isHTML(true);                                  // Set email format to HTML
+   
+  $mail->Subject = 'Reset password | tktpass';
+  $mail->Body    = $body;
+  $mail->AltBody = "Hi ".$name.",\n\nit seems you requested to reset your password at tktpass.com. If you did, you can reset your password by visiting\n\nhttps://tktpass.com/reset.php?selector=".htmlspecialchars(urlencode($selector))."&validator=".htmlspecialchars(urlencode($validator))."\n\nin your browser.\n\ntktpass Team";
+   
+  //Read an HTML message body from an external file, convert referenced images to embedded,
+  //convert HTML into a basic plain-text alternative body
+  $mail->msgHTML($body);
+  
+  return $mail->send();
+}
+
+function sendBookingEmail($user,$event,$order,$tickets) {
+  $stamp = time();
+  $templateDir = "/var/www/includes/email-templates/";
+  $body = file_get_contents($templateDir.'booking-email.html');
+  $body = str_replace('%%TITLE%%',htmlspecialchars($event['name']),$body);
+  $start = new DateTime($event['start']);
+  $time = $start->format('g');
+  if($start->format('i') !== '00')
+    $time .= ':'.$start->format('i');
+  $time .= $start->format('a');
+  $body = str_replace('%%TIME%%',htmlspecialchars($time),$body);
+  $body = str_replace('%%DATE%%',htmlspecialchars($start->format('jS F')),$body);
+  $body = str_replace('%%NAME%%',htmlspecialchars($user['first_name']),$body);
+  $totalQuantity = 0;
+  $total = 0;
+  foreach($order as $ticket){
+    $totalQuantity += $ticket['quantity'];
+    $total += $ticket['price']*$ticket['quantity'];
+  }
+  $body = str_replace('%%PLURAL%%',$totalQuantity>1?'s':'',$body);
+  /*function getQrCodeHTML($data){
+    include "/var/www/includes/phpqrcode2/qrcode.php";
+    $qr = new QRCode();
+    $qr->setErrorCorrectLevel(QR_ERROR_CORRECT_LEVEL_L);
+    function estimateTypeNumber($stringLength){
+      $estimate = -2.90441 + 0.0000396134*sqrt(-4.31958879*pow(10,8) + 5.0488*pow(10,8)*((int)$stringLength));
+      return min(max(ceil($estimate)+1,1),40);
+    }
+    $qr->setTypeNumber(estimateTypeNumber(strlen($data)));
+    $qr->addData($data);
+    $qr->make();
+
+    $matrixPointSize = 4;
+    if (isset($_REQUEST['size']))
+        $matrixPointSize = min(max((int)$_REQUEST['size'], 1), 10);
+
+    return $qr->getHTML($matrixPointSize);
+  }*/
+  $ids = '';
+  foreach ($tickets as $ticket) {
+    $ids .= $ticket["id"].',';
+  }
+  $ids = substr($ids, 0, -1);
+  //$body = str_replace('%%QRCODE%%',getQrCodeHTML($ids),$body);
+  //$body = str_replace('%%QRCODE%%','<img src="https://api.tktpass.com/qr.php?data='.urlencode($ids).'&img=1" />',$body);
+  $body = str_replace('%%TOTAL%%',number_format($total/100,2),$body);
+  $rowStart = strpos($body,"<!-- %%BEGIN ITEM ROW%% -->");
+  $rowEnd = strpos($body,"<!-- %%END ITEM ROW%% -->",$rowStart)+25;
+  $itemRow = substr($body, $rowStart, $rowEnd-$rowStart);
+  foreach (array_reverse($order) as $ticket) {
+    $insert = $itemRow;
+    $insert = str_replace('%%TICKET%%',$ticket['name'],$insert);
+    $insert = str_replace('%%QUANTITY%%',$ticket['quantity'],$insert);
+    $insert = str_replace('%%SUBTOTAL%%',number_format($ticket['quantity']*$ticket['price']/100,2),$insert);
+    $body = substr($body, 0, $rowEnd).$insert.substr($body, $rowEnd);
+  }
+  $body = substr($body, 0, $rowStart).substr($body, $rowEnd);
+
+  $mail = new PHPMailer;
+ 
+  $mail->isSMTP();                                      // Set mailer to use SMTP
+  $mail->Host = 'smtp.gmail.com';                       // Specify main and backup server
+  $mail->SMTPAuth = true;                               // Enable SMTP authentication
+  $mail->Username = 'contact@tktpass.com';              // SMTP username
+  $mail->Password = 'TKTPASS15!';                       // SMTP password
+  $mail->SMTPSecure = 'tls';                            // Enable encryption, 'ssl' also accepted
+  $mail->Port = 587;                                    //Set the SMTP port number - 587 for authenticated TLS
+  $mail->setFrom('no-reply@tktpass.com', 'tktpass Team');  //Set who the message is to be sent from
+  $mail->addReplyTo('contact@tktpass.com', 'tktpass Team');  //Set an alternative reply-to address
+  $mail->addAddress($user['email']);                     // Add a recipient
+  $mail->WordWrap = 50;                                 // Set word wrap to 50 characters
+  $mail->isHTML(true);                                  // Set email format to HTML
+
+  function getQrCodePNG($data){
+    include "/var/www/includes/phpqrcode/qrlib.php";
+    
+    $errorCorrectionLevel = 'H';
+    $matrixPointSize = 4;
+    ob_start();
+    QRcode::png($data, $filename, $errorCorrectionLevel, $matrixPointSize, 2);
+    $img = ob_get_contents();
+    ob_end_clean();
+
+    $QR = imagecreatefromstring($img);
+    $logo = imagecreatefrompng('/var/www/img/qr_logo.png');
+
+    $QR_width = imagesx($QR);
+    $QR_height = imagesy($QR);
+    
+    $logo_width = imagesx($logo);
+    $logo_height = imagesy($logo);
+
+    $scale = 3.4;
+
+    imagecopyresampled($QR, $logo, $QR_width/2-($QR_width/$scale)/2, $QR_height/2-($QR_height/$scale)/2, 0, 0, $QR_width/$scale, $QR_height/$scale, $logo_width, $logo_height);
+
+    ob_start();
+    imagepng($QR);
+    $img = ob_get_contents();
+    ob_end_clean();
+    imagedestroy($QR);
+    
+    return $img;
+  }
+  $mail->addStringEmbeddedImage(getQrCodePNG($ids), 'qr', (explode(',',$ids)[0]).'.png', 'base64', 'image/png');
+  $body = str_replace('%%QRCODE%%','<img src="cid:qr" />',$body);
+   
+  $mail->Subject = $event['name'].' | tktpass @ '.(new DateTime())->format('H:i d/m/y');
+  $mail->Body    = $body;
+  $mail->AltBody = 'You purchased tickets at tktpass.com. View your purchased tickets at http://tktpass.com/mytickets.php';
+   
+  //Read an HTML message body from an external file, convert referenced images to embedded,
+  //convert HTML into a basic plain-text alternative body
+  $mail->msgHTML(mb_convert_encoding(
+                $body,
+                "ISO-8859-1",
+                mb_detect_encoding($body, "UTF-8, ISO-8859-1, ISO-8859-15", true)
+            ));
+   
+  return $mail->send();
+}
+
+?>

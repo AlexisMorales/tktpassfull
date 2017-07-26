@@ -1,0 +1,365 @@
+/* ###########
+ * # Buttons CSS #
+ * ###########
+ */
+
+ .btn.round {
+     border-radius: .25rem;
+ }
+
+.btn-outline-white {
+    color: #fff;
+    background-image: none;
+    background-color: transparent;
+    border-color: #fff
+}
+
+.btn-outline-white:hover,.btn-outline-white:focus {
+    color: #fff;
+}
+
+.btn-outline-white.green{
+    background-color: #5ac336;
+}
+
+.btn-outline-white.filled{
+    background-color: rgba(255,255,255,0.2);
+}
+
+.btn-outline-green {
+    color: #5ac336;
+    background-image: none;
+    background-color: transparent;
+    border-color: #5ac336;
+    transition: background-color 0.1s ease, color 0.1s ease;
+    font-weight: 300;
+}
+
+.btn-outline-green:hover,.btn-outline-green:focus {
+    background-color: #5ac336;
+    color: #fff;
+}
+.btn-outline-green svg use {
+    fill: #5ac336;
+}
+
+.btn-outline-green:hover svg use,
+.btn-outline-green:focus svg use {
+    fill: #fff;
+}
+
+.btn-outline-black {
+    color: #000;
+    background-image: none;
+    background-color: transparent;
+    border-color: #000;
+    transition: background-color 0.1s ease, color 0.1s ease;
+    font-weight: 300;
+}
+
+.btn-outline-black:hover,.btn-outline-black:focus {
+    background-color: #000;
+    color: #fff;
+}
+
+.btn-outline-black svg use {
+    fill: #000;
+}
+
+.btn-outline-black:hover svg use,
+.btn-outline-black:focus svg use {
+    fill: #fff;
+}
+
+.btn-facebook, .btn-twitter {
+    color: white;
+    text-shadow: none;
+}
+
+.btn-facebook i.fa,
+.btn-twitter i.fa,
+.btn-email i.fa {
+    display: inline-block;
+    padding-left: 0.5em;
+    margin-left: 0.5em;
+    line-height: 1em;
+}
+
+.btn-facebook i.fa {
+    border-left: 1px solid #5d6ea2;
+}
+
+.btn-twitter i.fa {
+    border-left: 1px solid #c0deed;
+}
+
+.btn-email i.fa {
+    border-left: 1px solid #ccc;
+}
+
+.btn-facebook {
+    background-color: #3b5998;
+    background-image: -moz-linear-gradient(top,#45589c,#394a8a);
+    background-image: -ms-linear-gradient(top,#45589c,#394a8a);
+    background-image: -webkit-gradient(linear,0 0,0 100%,from(#45589c),to(#394a8a));
+    background-image: -webkit-linear-gradient(top,#45589c,#394a8a);
+    background-image: -o-linear-gradient(top,#45589c,#394a8a);
+    background-image: linear-gradient(top,#45589c,#394a8a);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#45589c',endColorstr='#394a8a',GradientType=0);
+}
+
+.btn-facebook:hover,.btn-facebook:focus,.btn-facebook:active,.btn-facebook.active,.btn-facebook[disabled],.btn-facebook.disabled {
+    color: white;
+    background-color: #3b5998;
+    background-image: -webkit-linear-gradient(top,#394a8a,#36518c);
+}
+
+.btn-facebook:active,.btn-facebook.active {
+    color: white;
+    background-color: #3b5998;
+    background-image: -webkit-linear-gradient(top,hsla(227,42%,30%,1),hsla(221,44%,36%,1));
+}
+
+.btn-twitter {
+    background-color: #55acee;
+    /*background-image: -moz-linear-gradient(top,#6bb1db,#3a92c8);
+    background-image: -ms-linear-gradient(top,#6bb1db,#3a92c8);
+    background-image: -webkit-gradient(linear,0 0,0 100%,from(#6bb1db),to(#3a92c8));
+    background-image: -webkit-linear-gradient(top,#6bb1db,#3a92c8);
+    background-image: -o-linear-gradient(top,#6bb1db,#3a92c8);
+    background-image: linear-gradient(top,#6bb1db,#3a92c8);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#6bb1db',endColorstr='#3a92c8',GradientType=0);*/
+}
+
+.btn-twitter:hover,.btn-twitter:focus,.btn-twitter:active,.btn-twitter.active,.btn-twitter[disabled],.btn-twitter.disabled {
+    color: white;
+    background-color: #55acee;
+    /*background-image: -webkit-linear-gradient(top,#3a92c8,#6bb1db);*/
+}
+
+.btn-twitter:active,.btn-twitter.active {
+    color: white;
+    background-color: #55acee;
+    /*background-image: -webkit-linear-gradient(top,#3a92c8,#6bb1db);*/
+}
+
+.btn-email {
+    color: #fff;
+    background-color: #3f3f3f;
+}
+
+.btn-email:hover,.btn-email:focus,.btn-email:active,.btn-email.active,.btn-email[disabled],.btn-email.disabled {
+    color: white;
+    background-color: #3f3f3f;
+}
+
+.btn-email:active,.btn-email.active {
+    color: white;
+    background-color: #3f3f3f;
+}
+
+.btn i.fa, .btn svg {
+    margin-right: 0.4em;
+  vertical-align: middle;
+}
+
+
+/*
+ * Checkbox and radio
+ * https://metroui.org.ua/inputs.html
+ */
+
+ .input-control.checkbox,
+.input-control.radio {
+  line-height: 1.875rem;
+  min-width: 1rem;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+.input-control.checkbox input[type="checkbox"],
+.input-control.radio input[type="checkbox"],
+.input-control.checkbox input[type="radio"],
+.input-control.radio input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0.0625rem;
+  height: 0.0625rem;
+}
+.input-control.checkbox .caption,
+.input-control.radio .caption {
+  margin: 0 .125rem;
+  vertical-align: middle;
+}
+.input-control.checkbox .check,
+.input-control.radio .check {
+  width: 1.625rem;
+  height: 1.625rem;
+  background-color: #ffffff;
+  border: 1px #408b27 solid;
+  padding: 0;
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+}
+.input-control.checkbox.text-left .check,
+.input-control.radio.text-left .check {
+  margin: 0 0 0 .3125rem;
+}
+.input-control.checkbox .check:focus,
+.input-control.radio .check:focus {
+  border-color: #bcd9e2;
+}
+.input-control.checkbox .check:before,
+.input-control.radio .check:before {
+  position: absolute;
+  vertical-align: middle;
+  color: transparent;
+  font-size: 0;
+  content: "";
+  height: .3125rem;
+  width: .565rem;
+  background-color: transparent;
+  border-left: .1875rem solid;
+  border-bottom: .1875rem solid;
+  border-color: transparent;
+  left: 50%;
+  top: 50%;
+  margin-left: -0.325rem;
+  margin-top: -0.365rem;
+  display: block;
+  -webkit-transform: rotate(-45deg);
+          transform: rotate(-45deg);
+  transition: all 0.2s linear;
+}
+.input-control.checkbox input[type=radio] ~ .check:before,
+.input-control.radio input[type=radio] ~ .check:before {
+  border-color: transparent;
+}
+.input-control.checkbox input[type="checkbox"]:checked ~ .check:before,
+.input-control.radio input[type="checkbox"]:checked ~ .check:before,
+.input-control.checkbox input[type="radio"]:checked ~ .check:before,
+.input-control.radio input[type="radio"]:checked ~ .check:before {
+  border-color: #555555;
+  transition: all 0.2s linear;
+}
+.input-control.checkbox input[type="checkbox"]:disabled ~ .caption,
+.input-control.radio input[type="checkbox"]:disabled ~ .caption,
+.input-control.checkbox input[type="radio"]:disabled ~ .caption,
+.input-control.radio input[type="radio"]:disabled ~ .caption {
+  color: #cacaca;
+  cursor: default;
+}
+.input-control.checkbox input[type="checkbox"]:disabled ~ .check,
+.input-control.radio input[type="checkbox"]:disabled ~ .check,
+.input-control.checkbox input[type="radio"]:disabled ~ .check,
+.input-control.radio input[type="radio"]:disabled ~ .check {
+  border-color: #cacaca;
+  cursor: default;
+}
+.input-control.checkbox input[type="checkbox"]:disabled:checked ~ .check:before,
+.input-control.radio input[type="checkbox"]:disabled:checked ~ .check:before {
+  border-color: #cacaca;
+}
+.input-control.checkbox input[type="radio"]:disabled:checked ~ .check:before,
+.input-control.radio input[type="radio"]:disabled:checked ~ .check:before {
+  background-color: #cacaca;
+}
+.input-control.checkbox input[data-show="indeterminate"] ~ .check:before,
+.input-control.radio input[data-show="indeterminate"] ~ .check:before,
+.input-control.checkbox input[data-show="indeterminate"]:checked ~ .check:before,
+.input-control.radio input[data-show="indeterminate"]:checked ~ .check:before,
+.input-control.checkbox input.indeterminate:checked ~ .check:before,
+.input-control.radio input.indeterminate:checked ~ .check:before,
+.input-control.checkbox input[type="checkbox"]:indeterminate ~ .check:before,
+.input-control.radio input[type="checkbox"]:indeterminate ~ .check:before {
+  display: none;
+}
+.input-control.checkbox input[data-show="indeterminate"] ~ .check:after,
+.input-control.radio input[data-show="indeterminate"] ~ .check:after,
+.input-control.checkbox input[data-show="indeterminate"]:checked ~ .check:after,
+.input-control.radio input[data-show="indeterminate"]:checked ~ .check:after,
+.input-control.checkbox input.indeterminate:checked ~ .check:after,
+.input-control.radio input.indeterminate:checked ~ .check:after,
+.input-control.checkbox input[type="checkbox"]:indeterminate ~ .check:after,
+.input-control.radio input[type="checkbox"]:indeterminate ~ .check:after {
+  position: absolute;
+  display: block;
+  content: "";
+  background-color: #5AC337;
+  height: .7em;
+  width: .7em;
+  left: 50%;
+  top: 50%;
+  margin-left: -0.35em;
+  margin-top: -0.35em;
+}
+.input-control.checkbox input[data-show="indeterminate"]:not(:checked) ~ .check:after,
+.input-control.radio input[data-show="indeterminate"]:not(:checked) ~ .check:after {
+  background-color: transparent;
+}
+.input-control.checkbox input[data-show="indeterminate"]:disabled ~ .check:after,
+.input-control.radio input[data-show="indeterminate"]:disabled ~ .check:after {
+  background-color: #cacaca;
+}
+.input-control.radio .check {
+  border: 1px #999999 solid;
+  border-radius: 50%;
+}
+.input-control.radio .check:before {
+  position: absolute;
+  display: block;
+  content: "";
+  background-color: #1d1d1d;
+  height: .5624rem;
+  width: .5624rem;
+  left: 50%;
+  top: 50%;
+  margin-left: -0.375rem;
+  margin-top: -0.375rem;
+  -webkit-transform: rotate(0deg);
+          transform: rotate(0deg);
+  border-radius: 50%;
+}
+.input-control.radio input[type="radio"]:checked ~ .check:before {
+  border-color: transparent;
+}
+.input-control.radio input[type="radio"]:not(:checked) ~ .check:before {
+  background-color: transparent;
+}
+.input-control.radio input[type="radio"]:disabled ~ .check:before {
+  border-color: transparent;
+}
+.input-control.small-check .check {
+  width: 1rem;
+  height: 1rem;
+}
+.input-control.small-check .check:before {
+  width: 6px;
+  height: 3px;
+  margin-left: -4px;
+  margin-top: -4px;
+  border-width: 2px;
+}
+.input-control.small-check.radio .check:before {
+  height: .375rem;
+  width: .375rem;
+  left: 50%;
+  top: 50%;
+  margin-left: -0.25rem;
+  margin-top: -0.25rem;
+}
+.input-control.small-check input[data-show="indeterminate"] ~ .check:after,
+.input-control.small-check input[data-show="indeterminate"]:checked ~ .check:after,
+.input-control.small-check input.indeterminate:checked ~ .check:after,
+.input-control.small-check input[type="checkbox"]:indeterminate ~ .check:after {
+  height: .375rem;
+  width: .375rem;
+  left: 50%;
+  top: 50%;
+  margin-left: -0.1875rem;
+  margin-top: -0.1875rem;
+}
